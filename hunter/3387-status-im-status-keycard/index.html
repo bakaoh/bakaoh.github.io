@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Building a Status Keycard simulator &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.github.io/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Building a Status Keycard simulator</h1>
+  <time datetime=2019-09-01T10:17:36&#43;0700 class="post-date">Sun, Sep 1, 2019</time>
+  <p>After winning the first place in <a href="https://gitcoin.co/issue/AdExNetwork/adex-protocol-eth/77/3275">this</a>, i was really excited to see what comes next <a href="https://gitcoin.co/hackathon/ethereal-blocks/">Gitcoin hackathon</a>.</p>
+
+<p>Looking thought the challenge list, there&rsquo;s one that catch my eye: <a href="https://gitcoin.co/issue/status-im/status-keycard/56/3387">Create A New SDK Or Development Tool Facilitating Integration Of Keycard</a></p>
+
+<p><img src="/status/1.png" alt="status1" title="Gitcoin" /></p>
+
+<p>The reasons are:</p>
+
+<ul>
+<li>It comes from <a href="https://github.com/status-im">status-im</a>, i always learn so much from their codebase (and 10% of my portfolio is in SNT).</li>
+<li>I never worked with Smartcard/Javacard or NFC before.</li>
+<li>I like everything related to cards.</li>
+</ul>
+
+<p>What will i create? They have already got Java and Go SDK, two programing languages that i use most often. Maybe i will create a Javascript SDK.</p>
+
+<p>But first i need to set up the development enviroment. The problem is i don&rsquo;t have any smartcard or card reader.</p>
+
+<p>The funder offer Keycard <a href="https://get.status.im/chat/public/status-keycard">here</a>, but it will takes 10-14 days to ship to my place, i may not receive the card before the hackathon ends. For card reader, i could find them in local stores. There&rsquo;re so many type, price range from $10 to $60, due to my lack of knowledge, i&rsquo;m not sure which one is suitable.</p>
+
+<p>So i try a faster and cheaper way, using smartcard and card reader simulator.</p>
+
+<p>In <a href="https://github.com/status-im/status-keycard">status-keycard</a>, they use a folk of <a href="https://jcardsim.org">jCardSim</a> for simulator test. jCardSim got <a href="https://jcardsim.org/blogs/work-jcardsim-through-pcsc-virtual-reader">BixVReaderCard</a> class that seems promising but <code>BixVReader</code> driver is only support Windows. Searching for alternatives, i found <a href="http://frankmorgner.github.io/vsmartcard/virtualsmartcard/README.html">vpcd</a> which support Linux, Windows and MacOS. Great!</p>
+
+<p>Install <code>vpcd</code> is pretty easy, on my Ubuntu, it took just a few steps:</p>
+
+<pre><code class="language-bash">$ sudo apt-get install pcscd libpcsclite-dev # install linux dependency
+$ git clone https://github.com/frankmorgner/vsmartcard.git # download vsmartcard
+$ cd vsmartcard/virtualsmartcard
+$ autoreconf --verbose --install &amp;&amp; ./configure &amp;&amp; sudo make install # install vpcd
+$ sudo /etc/init.d/pcscd restart # restart pcscd to load the new reader driver
+</code></pre>
+
+<p>Now i got <code>vpcd</code> as my virtual card reader, and <code>jCardSim</code> as JavaCard simulator. <code>jCardSim</code> connect to <code>vpcd</code> over TCP using <code>VSmartCardTCPProtocol</code> class. One thing left to do is install <code>KeycardApplet</code> to <code>jCardSim</code>:</p>
+
+<pre><code class="language-java">// Install KeycardApplet
+AID appletAID = AIDUtil.create(new byte[]{(byte) 0xA0, 0x00, 0x00, 0x08, 0x04, 0x00, 0x01, 0x01, 0x01});
+byte[] aid = new byte[]{0x09, (byte) 0xA0, 0x00, 0x00, 0x08, 0x04, 0x00, 0x01, 0x01, 0x01};
+sim.installApplet(appletAID, KeycardApplet.class, aid, (short) 0, (byte) aid.length);
+</code></pre>
+
+<p>Try it with <a href="https://github.com/status-im/keycard-cli">keycard-cli</a></p>
+
+<p><a href="https://asciinema.org/a/QedYAAWwsGrlZi68yWmfMCyUa?speed=2&amp;autoplay=1"><img src="https://asciinema.org/a/QedYAAWwsGrlZi68yWmfMCyUa.png" alt="asciicast" /></a></p>
+
+<p>It works!</p>
+
+<p>There&rsquo;re till some bugs but at least i could use the simulator to try out <code>status-keycard</code> and maybe even create my Keycard Javascript SDK.</p>
+
+<p>I wrapped all these in <a href="https://github.com/bakaoh/keycard-simulator">this repo</a>, hoping that it will be useful for someone. I didn’t test it on Windows and macOS though. This is my first time working with Smartcard, please let me know if i misunderstood anything.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

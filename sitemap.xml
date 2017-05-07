@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://bakaoh.github.io/</loc>
+    <lastmod>2019-09-02T11:04:36+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/hunter/3398-maticnetwork-matic-bounties/</loc>
+    <lastmod>2019-09-02T11:04:36+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/hunter/</loc>
+    <lastmod>2019-09-02T11:04:36+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/hunter/3387-status-im-status-keycard/</loc>
+    <lastmod>2019-09-01T10:17:36+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/trader/part1/</loc>
+    <lastmod>2019-07-18T08:24:26+07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/trader/</loc>
+    <lastmod>2019-07-18T08:24:26+07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://bakaoh.github.io/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deploying Uniswap on the Matic testnet &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.github.io/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Deploying Uniswap on the Matic testnet</h1>
+  <time datetime=2019-09-02T11:04:36&#43;0700 class="post-date">Mon, Sep 2, 2019</time>
+  
+
+<p><a href="https://matic.network/">Matic Network</a> is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.</p>
+
+<p><a href="https://github.com/Uniswap">Uniswap</a> is a protocol for automated token exchange on Ethereum.</p>
+
+<p>This guide will take you through:
+- Deploying Uniswap contracts on Matic testnet
+- Updating the latest frontend of Uniswap to use these contracts
+- Deploying the frontend to Github Pages</p>
+
+<h2 id="pre-requisite">Pre-requisite</h2>
+
+<p>You will need to have Metamask installed on your browser and be logged in to Metamask.</p>
+
+<p>You also need to configure Matic testnet RPC on Metamask. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+
+<h2 id="deploying-contracts-on-matic-testnet">Deploying contracts on Matic testnet</h2>
+
+<p>Uniswap contract using <a href="https://github.com/ethereum/vyper">Vyper</a>, a contract-oriented, pythonic programming language that targets the Ethereum Virtual Machine (EVM).</p>
+
+<p>We will use Remix for this article, however, it is possible to deploy contracts by using tools such as Truffle and others.</p>
+
+<p>First, go to <a href="https://remix.ethereum.org/">https://remix.ethereum.org/</a> and choose Vyper environment</p>
+
+<p><img src="/matic/1.png" alt="matic1" title="Remix" /></p>
+
+<h3 id="1-compile-uniswap-exchange-contract">1. Compile <code>uniswap_exchange</code> contract</h3>
+
+<p>Click <code>File explorers</code> tab on left menu, then click <code>Create new file</code> icon and enter <code>uniswap_exchange.vy</code> in <code>File Name</code> input</p>
+
+<p><img src="/matic/2.png" alt="matic2" title="Remix" /></p>
+
+<p>Copy the content of <code>uniswap_exchange</code> contract <a href="https://github.com/Uniswap/contracts-vyper/blob/v2/contracts/uniswap_exchange.vy">here</a>. Click <code>Vyper</code> tab on left menu and compile the contract.</p>
+
+<p><img src="/matic/3.png" alt="matic3" title="Remix" /></p>
+
+<p>When the compiler finish, you should see the <code>succeed</code> icon next to the <code>Vyper</code> tab and the ABI/Bytecode/LLL below</p>
+
+<p><img src="/matic/4.png" alt="matic4" title="Remix" /></p>
+
+<h3 id="2-deploy-uniswap-exchange-contract">2. Deploy <code>uniswap_exchange</code> contract</h3>
+
+<p>Click <code>Deploy</code> tab on left menu. Select <code>Injected Web3</code> as environment. If you logged in on Metamask and Matic testnet is already configured, you will see the line <code>Custom (8995) network</code> below and your address filled in the <code>Account</code> field.</p>
+
+<p>Make sure the right contract is chosen then click <code>Deploy</code>.</p>
+
+<p><img src="/matic/5.png" alt="matic5" title="Remix" /></p>
+
+<p>The Metamask notification will pop-up. You will see the alert <code>Insufficient funds</code>. Don&rsquo;t worry, click on the <code>Edit</code> button, choose <code>Advanced</code> tab and set the <code>Gas Price</code> to zero. You can now <code>Confirm</code> the transaction.</p>
+
+<p><img src="/matic/6.png" alt="matic6" title="Remix" /></p>
+
+<p>Deploying on Matic testnet is really fast. You should see the contract address appeared immediately in the <code>Deploy Contracts</code> session. Save the address (e.g. <code>0x407adc71821726f394cdd65d8612b8df96eca2eb</code>), we will need it to deploy <code>uniswap_factory</code> contract.</p>
+
+<p><img src="/matic/7.png" alt="matic7" title="Remix" /></p>
+
+<h3 id="3-compile-and-deploy-uniswap-factory-contract">3. Compile and deploy <code>uniswap_factory</code> contract</h3>
+
+<p>Use the content of <code>uniswap_factory</code> contract <a href="https://github.com/Uniswap/contracts-vyper/blob/v2/contracts/uniswap_factory.vy">here</a> you can compile and deploy it just as with <code>uniswap_exchange</code> contract.</p>
+
+<p>A small different in the last step, before clicking <code>Deploy</code> button, you must fill the <code>uniswap_exchange</code> address above (i.e. <code>0x407adc71821726f394cdd65d8612b8df96eca2eb</code>) as init parameter.</p>
+
+<p><img src="/matic/8.png" alt="matic8" title="Remix" /></p>
+
+<p>Now you got <code>uniswap_factory</code> deployed address (e.g. <code>0x0f970cf1edebd269e48e085608e9bd334af0c07b</code>), keep it to use in the front-end.</p>
+
+<h2 id="updating-the-frontend">Updating the frontend</h2>
+
+<p>Folk and clone the uniswap-frontend</p>
+
+<pre><code>$ git clone https://github.com/Uniswap/uniswap-frontend
+$ cd uniswap-frontend
+</code></pre>
+
+<p>Install the dependencies</p>
+
+<pre><code>$ yarn
+</code></pre>
+
+<p>Rename <code>.env.local.example</code> to <code>.env.local</code> and fill in the variables</p>
+
+<pre><code>REACT_APP_NETWORK_ID=&quot;8995&quot;
+REACT_APP_NETWORK_URL=&quot;https://testnet2.matic.network&quot;
+</code></pre>
+
+<p>Update factory addresses in <code>src/constants/index.js</code> with your <code>uniswap_factory</code> address above</p>
+
+<pre><code class="language-js">export const FACTORY_ADDRESSES = {
+  1: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
+  3: '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351',
+  4: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
+  42: '0xD3E51Ef092B2845f10401a0159B2B96e8B6c3D30',
+  8995: '0x0f970cf1edebd269e48e085608e9bd334af0c07b'
+}
+</code></pre>
+
+<p>Run the font-end at local</p>
+
+<pre><code>$ yarn start
+</code></pre>
+
+<p><img src="/matic/9.png" alt="matic9" title="Frontend" /></p>
+
+<p>Try click on the <code>Connect</code> button on the upper right, it should show your address</p>
+
+<p><img src="/matic/10.png" alt="matic10" title="Frontend" /></p>
+
+<p>If the <code>Wrong network</code> message is showed, you should recheck the address in the constant file and make sure the Metamask is till on Matic testnet.</p>
+
+<p><img src="/matic/11.png" alt="matic11" title="Frontend" /></p>
+
+<h2 id="deploying-the-frontend-to-github-pages">Deploying the frontend to Github Pages</h2>
+
+<p>Install the <code>gh-pages</code> package from npm</p>
+
+<pre><code>$ yarn add gh-pages
+</code></pre>
+
+<p>Open <code>package.json</code> file in your front-end root directory and update <code>homepage</code> url to your github repository. In my case, it is:</p>
+
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;uniswap&quot;,
+    &quot;description&quot;: &quot;Uniswap Exchange Protocol&quot;,
+    &quot;version&quot;: &quot;0.1.0&quot;,
+    &quot;homepage&quot;: &quot;https://bakaoh.github.io/uniswap-frontend&quot;,
+    ...
+</code></pre>
+
+<p>Also in <code>package.json</code> file, add these lines in the <code>scripts</code> session</p>
+
+<pre><code class="language-json">&quot;scripts&quot;: {
+    ...
+    &quot;predeploy&quot;: &quot;yarn run build&quot;,
+    &quot;deploy&quot;: &quot;gh-pages -d build&quot;
+},
+</code></pre>
+
+<p>Deploy to your repository</p>
+
+<pre><code>$ yarn run deploy
+</code></pre>
+
+<p>Your Uniswap using contracts on Matic testnet is now live on <a href="https://bakaoh.github.io/uniswap-frontend">gh-pages</a></p>
+
+<p>Thanks for reading and I do hope you found this article somewhat helpful.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

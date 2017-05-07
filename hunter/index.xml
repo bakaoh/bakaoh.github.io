@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hunters on BAKAOH</title>
+    <link>https://bakaoh.github.io/hunter/</link>
+    <description>Recent content in Hunters on BAKAOH</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 02 Sep 2019 11:04:36 +0700</lastBuildDate>
+    
+	<atom:link href="https://bakaoh.github.io/hunter/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Deploying Uniswap on the Matic testnet</title>
+      <link>https://bakaoh.github.io/hunter/3398-maticnetwork-matic-bounties/</link>
+      <pubDate>Mon, 02 Sep 2019 11:04:36 +0700</pubDate>
+      
+      <guid>https://bakaoh.github.io/hunter/3398-maticnetwork-matic-bounties/</guid>
+      <description>Matic Network is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.
+Uniswap is a protocol for automated token exchange on Ethereum.
+This guide will take you through: - Deploying Uniswap contracts on Matic testnet - Updating the latest frontend of Uniswap to use these contracts - Deploying the frontend to Github Pages</description>
+    </item>
+    
+    <item>
+      <title>Building a Status Keycard simulator</title>
+      <link>https://bakaoh.github.io/hunter/3387-status-im-status-keycard/</link>
+      <pubDate>Sun, 01 Sep 2019 10:17:36 +0700</pubDate>
+      
+      <guid>https://bakaoh.github.io/hunter/3387-status-im-status-keycard/</guid>
+      <description>After winning the first place in this, i was really excited to see what comes next Gitcoin hackathon.
+Looking thought the challenge list, there&amp;rsquo;s one that catch my eye: Create A New SDK Or Development Tool Facilitating Integration Of Keycard
+The reasons are:
+ It comes from status-im, i always learn so much from their codebase (and 10% of my portfolio is in SNT). I never worked with Smartcard/Javacard or NFC before.</description>
+    </item>
+    
+  </channel>
+</rss>

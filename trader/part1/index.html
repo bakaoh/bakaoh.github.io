@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Learn technical analysis by building my trading bot (part 1) &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.github.io/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Learn technical analysis by building my trading bot (part 1)</h1>
+  <time datetime=2019-07-18T08:24:26&#43;0700 class="post-date">Thu, Jul 18, 2019</time>
+  
+
+<p>I bought my first Bitcoin two years ago when it was around $3000 and has keep trading everyday since then. I love trading, it&rsquo;s exciting to wake up in the morning and check my balance.</p>
+
+<p>Everything is not going well, i burned out my account several times and never learned a thing. I&rsquo;m still having fun while trading but it&rsquo;s like an expensive hobby but not a business&hellip;</p>
+
+<p>It&rsquo;s time to get serious.</p>
+
+<h3 id="what-is-my-plan">What is my plan?</h3>
+
+<p>As a technical person, i focus on technical analysis first (they&rsquo;re both <em>technical</em>!). Last few weeks, i&rsquo;ve read a lot of articles on that topic and joined any course i found, there&rsquo;s no end of them. They give so many concepts, patterns that i can&rsquo;t memorize them all. And even if i can, i don&rsquo;t know how to use them. I definitely need a better way to learn.</p>
+
+<p>Eventually i decided to learn it the programmer&rsquo;s way: Build a trading bot from scratch. I hope it could helps me gain a better understanding of technical analysis. Here is the plan</p>
+
+<ul>
+<li><p>I&rsquo;m going to start with some basic building blocks. They&rsquo;re not really interesting but i will need them to build other things.</p></li>
+
+<li><p>Next, i will implement some well-known <strong>indicators</strong> which i saw in a lot of trading strategy.</p></li>
+
+<li><p>Then figure out some way to determine <strong>support and resistance</strong> and <strong>trend line</strong>. I&rsquo;m still confused about them so it may take some time.</p></li>
+
+<li><p>When everything is ready, i will code my first <strong>strategy</strong> and, of course, <strong>backtest</strong> it.</p></li>
+
+<li><p>Finally, connect broker/exchange API and put some money to work.</p></li>
+</ul>
+
+<p>First thing first&hellip;</p>
+
+<h3 id="what-is-technical-analysis">What is Technical Analysis?</h3>
+
+<p>This is the definition i got from <a href="https://www.investopedia.com/terms/t/technicalanalysis.asp">investopedia</a></p>
+
+<blockquote>
+<p>Technical analysis is a trading discipline employed to evaluate investments and identify trading opportunities by analyzing statistical trends gathered from trading activity, such as price movement and volume.</p>
+</blockquote>
+
+<p>In short, we use past price action to predict price movement. How to do that is coming later. Let&rsquo;s start by defining data structures to represent these historic data.</p>
+
+<p><img src="/chart.png" alt="mô hình nến" title="Mô hình nến" /></p>
+
+<h3 id="data-point">Data Point</h3>
+
+<p>The image above is an example of candletick chart, which is commonly used in technical analysis. A candle has 4 data:</p>
+
+<ul>
+<li><p>Open – The opening price</p></li>
+
+<li><p>High – The highest price</p></li>
+
+<li><p>Low – The lowest price</p></li>
+
+<li><p>Close – The closing price</p></li>
+</ul>
+
+<p>There&rsquo;s also volume data at the bottom of the chart. These values are aggregated during a single time period and identified by start timestamp. We will keep them in <code>DataPoint</code> struct:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">DataPoint</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">StartTime</span>  <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>
+	<span style="color:#a6e22e">OpenPrice</span>  <span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">ClosePrice</span> <span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">HighPrice</span>  <span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">LowPrice</span>   <span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">Volume</span>     <span style="color:#a6e22e">num</span>.<span style="color:#a6e22e">Decimal</span>
+}</code></pre></div>
+
+<p>with <code>num.Decimal</code> is the interface:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Decimal</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">addend</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">Sub</span>(<span style="color:#a6e22e">subtrahend</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">Mul</span>(<span style="color:#a6e22e">factor</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">Div</span>(<span style="color:#a6e22e">denominator</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#a6e22e">Decimal</span>
+	<span style="color:#a6e22e">Compare</span>(<span style="color:#a6e22e">other</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">Float</span>() <span style="color:#66d9ef">float64</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Stringer</span>
+}</code></pre></div>
+
+<p>We could implement <code>num.Decimal</code> using <code>float64</code> if we need high performance. Otherwise, if we need decimal with arbitrary precision, we could use <code>math/big.Float</code>.</p>
+
+<p>Below is the simple implement, which is a thin wrapper around <code>float64</code>. For precision decimal implement and unit tests, go <a href="github">here</a></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">simpleDecimal</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">fl</span> <span style="color:#66d9ef">float64</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>) <span style="color:#a6e22e">cast</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sd</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>); <span style="color:#a6e22e">ok</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">sd</span>
+	}
+	panic(<span style="color:#e6db74">&#34;incompatible decimal implement&#34;</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>) <span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">addend</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#a6e22e">Decimal</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">simpleDecimal</span>{<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">fl</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">cast</span>(<span style="color:#a6e22e">addend</span>).<span style="color:#a6e22e">fl</span>}
+}
+
+<span style="color:#75715e">// Sub, Mul, Div are similar ...
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>) <span style="color:#a6e22e">Compare</span>(<span style="color:#a6e22e">other</span> <span style="color:#a6e22e">Decimal</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#a6e22e">o</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">cast</span>(<span style="color:#a6e22e">other</span>).<span style="color:#a6e22e">fl</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">fl</span> &gt; <span style="color:#a6e22e">o</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">fl</span> &lt; <span style="color:#a6e22e">o</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>) <span style="color:#a6e22e">Float</span>() <span style="color:#66d9ef">float64</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">fl</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">simpleDecimal</span>) <span style="color:#a6e22e">String</span>() <span style="color:#66d9ef">string</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Sprintf</span>(<span style="color:#e6db74">&#34;%f&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">fl</span>)
+}</code></pre></div>
+
+<h3 id="time-series">Time Series</h3>
+
+<p>Usually, we need a series of data points to analysis. These data points are taken at a same period described as chart time frame.</p>
+
+<p><strong>Time frame</strong> is an important variable we must consider when studying chart. It ranges from minute to daily or weekly, depend on the trader’s personal trading style.</p>
+
+<ul>
+<li><p>Day traders could use 5-minute, 15-minute or 60-minute charts.</p></li>
+
+<li><p>Swing traders could use 1-hour charts and daily charts.</p></li>
+
+<li><p>Position traders could use daily charts, monthly charts or weekly charts.</p></li>
+</ul>
+
+<p>Our <code>TimeSeries</code> struct will look like this:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TimeSeries</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">candles</span>   []<span style="color:#f92672">*</span><span style="color:#a6e22e">DataPoint</span>
+	<span style="color:#a6e22e">timeframe</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewTimeSeries</span>(<span style="color:#a6e22e">timeframe</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TimeSeries</span>) {
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">TimeSeries</span>{[]<span style="color:#f92672">*</span><span style="color:#a6e22e">DataPoint</span>{}, <span style="color:#a6e22e">timeframe</span>}
+}</code></pre></div>
+
+<p>We use <code>Append</code> to add a DataPoint at the end of the series and <code>At</code> to get a <code>DataPoint</code> by index. <code>Append</code> method makes sure the series is in time order.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ts</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TimeSeries</span>) <span style="color:#a6e22e">Append</span>(<span style="color:#a6e22e">point</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">DataPoint</span>) <span style="color:#66d9ef">bool</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">point</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#e6db74">&#34;candle cannot be nil&#34;</span>)
+	}
+
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">point</span>.<span style="color:#a6e22e">StartTime</span>.<span style="color:#a6e22e">After</span>(<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>[len(<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>].<span style="color:#a6e22e">StartTime</span>) {
+		<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span> = append(<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>, <span style="color:#a6e22e">point</span>)
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">ts</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">TimeSeries</span>) <span style="color:#a6e22e">At</span>(<span style="color:#a6e22e">index</span> <span style="color:#66d9ef">int</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">DataPoint</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">index</span> &lt; <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">index</span> <span style="color:#f92672">&gt;=</span> len(<span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>) {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrIndexOutOfRange</span>
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ts</span>.<span style="color:#a6e22e">data</span>[<span style="color:#a6e22e">index</span>], <span style="color:#66d9ef">nil</span>
+}</code></pre></div>
+
+<p>That’s it for today.</p>
+
+<p>In the next few parts of the series, we will use our <code>DataPoints</code> and <code>TimeSeries</code> to calculate some indicators.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
