@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on BAKAOH</title>
-    <link>https://bakaoh.github.io/tags/</link>
+    <link>https://bakaoh.com/tags/</link>
     <description>Recent content in Tags on BAKAOH</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="https://bakaoh.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://bakaoh.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>
