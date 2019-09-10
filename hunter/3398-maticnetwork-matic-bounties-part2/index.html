@@ -67,26 +67,30 @@
 
 <h2 id="setup-environment">Setup environment</h2>
 
-<p>You need system-wide installations of Python 3.6+, Node.js 10+, and Solidity 0.5.10.</p>
+<p>You need system-wide installations of</p>
+
+<ul>
+<li>Python 3.6+ and <a href="https://virtualenv.pypa.io/en/latest/">virtualenv</a></li>
+<li>Node.js 10+</li>
+<li>Solidity 0.5.10.</li>
+</ul>
 
 <p>Clone the augur monorepo and install node dependencies</p>
 
-<pre><code>$ git clone https://github.com/AugurProject/augur.git
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/AugurProject/augur.git
 $ cd augur
 $ yarn
-$ yarn build
-</code></pre>
+$ yarn build</code></pre></div>
 
 <h2 id="deploy-contracts">Deploy contracts</h2>
 
 <p>Install python dependencies:</p>
 
-<pre><code>$ virtualenv -p $(which python3) venv
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ virtualenv -p <span style="color:#66d9ef">$(</span>which python3<span style="color:#66d9ef">)</span> venv
 $ source venv/bin/activate
 $ sudo apt-get install pandoc
 $ sudo pip3 install pathlib
-$ sudo pip3 install -r packages/augur-core/requirements.txt --ignore-installed
-</code></pre>
+$ sudo pip3 install -r packages/augur-core/requirements.txt --ignore-installed</code></pre></div>
 
 <p>Open <code>packages/augur-core/source/libraries/NetworkConfiguration.ts</code> file and append <code>matic</code> to network option (<a href="https://github.com/bakaoh/augur/blob/matic/packages/augur-core/source/libraries/NetworkConfiguration.ts">view file</a>)</p>
 
@@ -118,24 +122,22 @@ $ sudo pip3 install -r packages/augur-core/requirements.txt --ignore-installed
 
 <p>Build <code>augur-core</code> and deploy contracts</p>
 
-<pre><code>$ yarn workspace @augurproject/core install 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn workspace @augurproject/core install 
 $ yarn workspace @augurproject/core build
-$ yarn workspace @augurproject/core deploy:net matic
-</code></pre>
+$ yarn workspace @augurproject/core deploy:net matic</code></pre></div>
 
 <p>On success, two file <code>packages/augur-artifacts/src/addresses.json</code> and <code>packages/augur-artifacts/src/contracts.json</code> in your working directory will be updated with the new addresses and contract bytecodes</p>
 
-<pre><code>$ git status
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git status
 On branch master
-Your branch is up-to-date with 'origin/master'.
-Changes not staged for commit:
-  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
-  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+Your branch is up-to-date with <span style="color:#e6db74">&#39;origin/master&#39;</span>.
+Changes not staged <span style="color:#66d9ef">for</span> commit:
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span style="color:#f92672">)</span>
+  <span style="color:#f92672">(</span>use <span style="color:#e6db74">&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span style="color:#f92672">)</span>
 
 	modified:   packages/augur-artifacts/src/addresses.json
 	modified:   packages/augur-artifacts/src/contracts.json
-	modified:   packages/augur-core/source/libraries/NetworkConfiuration.ts
-</code></pre>
+	modified:   packages/augur-core/source/libraries/NetworkConfiuration.ts</code></pre></div>
 
 <h2 id="update-front-end">Update front-end</h2>
 
@@ -168,48 +170,44 @@ Changes not staged for commit:
 
 <p>In <code>packages/augur-ui/src/config/network.json</code>, add <code>matic</code> network config (<a href="https://github.com/bakaoh/augur/blob/matic/packages/augur-ui/src/config/network.json">view file</a>)</p>
 
-<pre><code>&quot;matic&quot;: {
-    &quot;ethereum-node&quot;: {
-        &quot;http&quot;: &quot;https://testnet2.matic.network&quot;,
-        &quot;ws&quot;: null,
-        &quot;pollingIntervalMilliseconds&quot;: 10000,
-        &quot;blockRetention&quot;: 100,
-        &quot;connectionTimeout&quot;: 60000
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;matic&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#f92672">&#34;ethereum-node&#34;</span>: {
+        <span style="color:#f92672">&#34;http&#34;</span>: <span style="color:#e6db74">&#34;https://testnet2.matic.network&#34;</span>,
+        <span style="color:#f92672">&#34;ws&#34;</span>: <span style="color:#66d9ef">null</span>,
+        <span style="color:#f92672">&#34;pollingIntervalMilliseconds&#34;</span>: <span style="color:#ae81ff">10000</span>,
+        <span style="color:#f92672">&#34;blockRetention&#34;</span>: <span style="color:#ae81ff">100</span>,
+        <span style="color:#f92672">&#34;connectionTimeout&#34;</span>: <span style="color:#ae81ff">60000</span>
     },
-    &quot;universe&quot;: null,
-    &quot;debug&quot;: {
-        &quot;connect&quot;: true,
-        &quot;broadcast&quot;: false
+    <span style="color:#f92672">&#34;universe&#34;</span>: <span style="color:#66d9ef">null</span>,
+    <span style="color:#f92672">&#34;debug&#34;</span>: {
+        <span style="color:#f92672">&#34;connect&#34;</span>: <span style="color:#66d9ef">true</span>,
+        <span style="color:#f92672">&#34;broadcast&#34;</span>: <span style="color:#66d9ef">false</span>
     }
-}
-</code></pre>
+}</code></pre></div>
 
 <p>In <code>packages/augur-ui/package.json</code>, add <code>build:matic</code> script (<a href="https://github.com/bakaoh/augur/blob/matic/packages/augur-ui/package.json">view file</a>)</p>
 
-<pre><code class="language-json">&quot;scripts&quot;: {
-    ...
-    &quot;build:matic&quot;: &quot;genversion --es6 --semi src/version.js &amp;&amp; ETHEREUM_NETWORK=matic node scripts/build.js&quot;,
-    ...
-},
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#960050;background-color:#1e0010">...</span>
+    <span style="color:#f92672">&#34;build:matic&#34;</span>: <span style="color:#e6db74">&#34;genversion --es6 --semi src/version.js &amp;&amp; ETHEREUM_NETWORK=matic node scripts/build.js&#34;</span>,
+    <span style="color:#960050;background-color:#1e0010">...</span>
+}<span style="color:#960050;background-color:#1e0010">,</span></code></pre></div>
 
 <p>Build <code>augur-ui</code></p>
 
-<pre><code>$ yarn workspace @augurproject/ui build:matic
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn workspace @augurproject/ui build:matic</code></pre></div>
 
 <p>This will create a <code>build</code> folder inside of the <code>augur-ui</code> directory with all the files necessary to run the client.</p>
 
 <p>I use <a href="https://www.npmjs.com/package/http-server">http-server</a> to run the client local, but you can also use <code>python3 -m http.server</code> or any other web server</p>
 
-<pre><code>$ npm install http-server -g
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install http-server -g
 $ http-server packages/augur-ui/build/
 Starting up http-server, serving packages/augur-ui/build/
 Available on:
   http://127.0.0.1:8080
   http://192.168.1.102:8080
-Hit CTRL-C to stop the server
-</code></pre>
+Hit CTRL-C to stop the server</code></pre></div>
 
 <p>Go to <a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> you may see some pop-up</p>
 

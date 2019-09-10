@@ -6,10 +6,22 @@
     <description>Recent content on BAKAOH</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 06 Sep 2019 11:04:36 +0700</lastBuildDate>
+    <lastBuildDate>Tue, 10 Sep 2019 09:39:36 +0700</lastBuildDate>
     
 	<atom:link href="https://bakaoh.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Deploying 0x on the Matic testnet</title>
+      <link>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part3/</link>
+      <pubDate>Tue, 10 Sep 2019 09:39:36 +0700</pubDate>
+      
+      <guid>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part3/</guid>
+      <description>Matic Network is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.
+0x is an open protocol that facilitates trustless, low friction exchange of Ethereum-based assets.
+This guide will take you through:
+ Deploying 0x contracts on Matic testnet Starting an exchange on Matic testnet using 0x-launch-kit  Pre-requisite You need system-wide installations of</description>
+    </item>
     
     <item>
       <title>Deploying Augur on the Matic testnet</title>

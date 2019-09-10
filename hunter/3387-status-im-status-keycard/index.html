@@ -76,20 +76,22 @@
 
 <p>Install <code>vpcd</code> is pretty easy, on my Ubuntu, it took just a few steps:</p>
 
-<pre><code class="language-bash">$ sudo apt-get install pcscd libpcsclite-dev # install linux dependency
-$ git clone https://github.com/frankmorgner/vsmartcard.git # download vsmartcard
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># install linux dependency</span>
+$ sudo apt-get install pcscd libpcsclite-dev
+<span style="color:#75715e"># download vsmartcard</span>
+$ git clone https://github.com/frankmorgner/vsmartcard.git
 $ cd vsmartcard/virtualsmartcard
-$ autoreconf --verbose --install &amp;&amp; ./configure &amp;&amp; sudo make install # install vpcd
-$ sudo /etc/init.d/pcscd restart # restart pcscd to load the new reader driver
-</code></pre>
+<span style="color:#75715e"># install vpcd</span>
+$ autoreconf --verbose --install <span style="color:#f92672">&amp;&amp;</span> ./configure <span style="color:#f92672">&amp;&amp;</span> sudo make install
+<span style="color:#75715e"># restart pcscd to load the new reader driver</span>
+$ sudo /etc/init.d/pcscd restart</code></pre></div>
 
 <p>Now i got <code>vpcd</code> as my virtual card reader, and <code>jCardSim</code> as JavaCard simulator. <code>jCardSim</code> connect to <code>vpcd</code> over TCP using <code>VSmartCardTCPProtocol</code> class. One thing left to do is install <code>KeycardApplet</code> to <code>jCardSim</code>:</p>
 
-<pre><code class="language-java">// Install KeycardApplet
-AID appletAID = AIDUtil.create(new byte[]{(byte) 0xA0, 0x00, 0x00, 0x08, 0x04, 0x00, 0x01, 0x01, 0x01});
-byte[] aid = new byte[]{0x09, (byte) 0xA0, 0x00, 0x00, 0x08, 0x04, 0x00, 0x01, 0x01, 0x01};
-sim.installApplet(appletAID, KeycardApplet.class, aid, (short) 0, (byte) aid.length);
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// Install KeycardApplet
+</span><span style="color:#75715e"></span>AID appletAID <span style="color:#f92672">=</span> AIDUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]{(</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">)</span> 0xA0<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x08<span style="color:#f92672">,</span> 0x04<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">});</span>
+<span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> aid <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]{</span>0x09<span style="color:#f92672">,</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">)</span> 0xA0<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x08<span style="color:#f92672">,</span> 0x04<span style="color:#f92672">,</span> 0x00<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">,</span> 0x01<span style="color:#f92672">};</span>
+sim<span style="color:#f92672">.</span><span style="color:#a6e22e">installApplet</span><span style="color:#f92672">(</span>appletAID<span style="color:#f92672">,</span> KeycardApplet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> aid<span style="color:#f92672">,</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">short</span><span style="color:#f92672">)</span> 0<span style="color:#f92672">,</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">)</span> aid<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">);</span></code></pre></div>
 
 <p>Try it with <a href="https://github.com/status-im/keycard-cli">keycard-cli</a></p>
 

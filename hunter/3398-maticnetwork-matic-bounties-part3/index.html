@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deploying 0x on the Matic testnet &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.com/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Deploying 0x on the Matic testnet</h1>
+  <time datetime=2019-09-10T09:39:36&#43;0700 class="post-date">Tue, Sep 10, 2019</time>
+  
+
+<p><a href="https://matic.network/">Matic Network</a> is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.</p>
+
+<p><a href="https://0x.org/">0x</a> is an open protocol that facilitates trustless, low friction exchange of Ethereum-based assets.</p>
+
+<p>This guide will take you through:</p>
+
+<ul>
+<li>Deploying 0x contracts on Matic testnet</li>
+<li>Starting an exchange on Matic testnet using 0x-launch-kit</li>
+</ul>
+
+<h2 id="pre-requisite">Pre-requisite</h2>
+
+<p>You need system-wide installations of</p>
+
+<ul>
+<li>Python 3</li>
+<li>Node.js 8+</li>
+<li>Yarn 1.9.4+</li>
+</ul>
+
+<h2 id="deploy-contracts">Deploy contracts</h2>
+
+<p>Clone the 0x-monorepo and install node dependencies</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/0xProject/0x-monorepo.git
+$ cd 0x-monorepo/
+$ yarn install</code></pre></div>
+
+<p>Because our Matic testnet provider doesn&rsquo;t return any addresses on <code>eth_accounts</code> call, we will need to make this small change to enable <code>migration</code> package deploying the contracts:</p>
+
+<ul>
+<li>Open <code>packages/migrations/src/migration.ts</code> file</li>
+<li>Find the line <code>const accounts: string[] = await web3Wrapper.getAvailableAddressesAsync();</code></li>
+<li>Replace it with <code>const accounts: string[] = ['0x56F65dCD821c660b4f3E833696747F5D8e3C537B', '0x685A01B16909eC890B548D9DFf6E7ABF4ec0A24e'];</code></li>
+<li>Feel free to change these two addresses with yours, they will be use as owners of <code>AssetProxyOwnerContract</code>.</li>
+</ul>
+
+<p>Build <code>migrations</code> package and all other monorepo packages that it depends on, run the following from the monorepo root directory:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ PKG<span style="color:#f92672">=</span>@0x/migrations yarn build</code></pre></div>
+
+<p>Deploy the contracts to Matic testnet</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ packages/migrations/bin/0x-migrate.js --rpc-url <span style="color:#e6db74">&#39;https://testnet2.matic.network&#39;</span> --from $DeployAddress --pk $PrivatekeyForDeployAddress</code></pre></div>
+
+<p>After few seconds (Matic testnet is really fast!) we should see our deployed contract addresses</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">transactionHash: ...
+ERC20Proxy successfully deployed at ...
+transactionHash: ...
+ERC721Proxy successfully deployed at ...
+transactionHash: ...
+ZRXToken successfully deployed at ...
+transactionHash: ...
+WETH9 successfully deployed at ...
+transactionHash: ...
+Exchange successfully deployed at ...
+transactionHash: ...
+...</code></pre></div>
+
+<p>You can place these addresses to the explorer URL, like this <a href="https://explorer.testnet2.matic.network/address/0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7">https://explorer.testnet2.matic.network/address/0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7</a>, to make sure the contracts is correctly deployed on Matic.</p>
+
+<p>Open <code>packages/contract-addresses/src/index.ts</code>, append <code>Matic</code> to network id list and put our addresses above to <code>networkToAddresses</code> (<a href="https://github.com/bakaoh/0x-monorepo/blob/matic/packages/contract-addresses/src/index.ts">view file</a>)</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">...
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">NetworkId</span> {
+    <span style="color:#a6e22e">Mainnet</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+    <span style="color:#a6e22e">Ropsten</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>,
+    <span style="color:#a6e22e">Rinkeby</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>,
+    <span style="color:#a6e22e">Kovan</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>,
+    <span style="color:#a6e22e">Ganache</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
+    <span style="color:#a6e22e">Matic</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">8995</span>,
+}
+...
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">networkToAddresses</span><span style="color:#f92672">:</span> { [<span style="color:#a6e22e">networkId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">number</span>]<span style="color:#f92672">:</span> <span style="color:#a6e22e">ContractAddresses</span> } <span style="color:#f92672">=</span> {
+    ...
+    <span style="color:#ae81ff">8995</span><span style="color:#f92672">:</span> {
+        <span style="color:#a6e22e">exchange</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xd30d3d36daa6da31d481c19eaccd94558c1aa594&#39;</span>,
+        <span style="color:#a6e22e">erc20Proxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x0a53e142138c0d68f5cf968cc74c6f633df57f6b&#39;</span>,
+        <span style="color:#a6e22e">erc721Proxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x8fb632da59e73450e097847c0c75608f79770182&#39;</span>,
+        <span style="color:#a6e22e">erc1155Proxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xcc270ac66fdde50ea78c6e6a4a334739a2e3f59d&#39;</span>,
+        <span style="color:#a6e22e">forwarder</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x51eb0db2c4a7bcfe18f83f3bdbfaec604056cb03&#39;</span>,
+        <span style="color:#a6e22e">orderValidator</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x0a999c924736b8ec96f01fc959365ebd999a8dab&#39;</span>,
+        <span style="color:#a6e22e">zrxToken</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xb1b57aca0977fdc772bda3ee292b189f363bcea0&#39;</span>,
+        <span style="color:#a6e22e">etherToken</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xbf4263c8842b48c2f7cb1ceb237ae0207952edab&#39;</span>,
+        <span style="color:#a6e22e">assetProxyOwner</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x1f02042d523d9d8b5eafe6eb6d2945b1cf14dd2d&#39;</span>,
+        <span style="color:#a6e22e">dutchAuction</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xc06123a6a87f9866cd74952d3436a78a37a3a46b&#39;</span>,
+        <span style="color:#a6e22e">coordinatorRegistry</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x9ab4d2039e07d08178fac0964cf967f3bd2e25e7&#39;</span>,
+        <span style="color:#a6e22e">coordinator</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xa100ac285e42e62b8d802428d715963f18932aab&#39;</span>,
+        <span style="color:#a6e22e">multiAssetProxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x3cf1c836071578a1e900236abf9d2ef0c966c53a&#39;</span>,
+        <span style="color:#a6e22e">staticCallProxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x66dafa927c0b36954b67508ad2ee065ac1715024&#39;</span>,
+        <span style="color:#a6e22e">devUtils</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x944131374d60fbdc8d99a05cfd42bb23d33142d9&#39;</span>,
+    },
+};
+...
+</code></pre></div>
+
+<p>Build <code>contract-addresses</code> package and all other monorepo packages that it depends on, run the following from the monorepo root directory:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ PKG<span style="color:#f92672">=</span>@0x/contract-addresses yarn build</code></pre></div>
+
+<h2 id="start-0x-launch-kit-backend">Start 0x-launch-kit-backend</h2>
+
+<p>Clone the 0x-launch-kit-backend in the same parent directory with 0x-monorepo. Don&rsquo;t install the dependencies yet!</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/0xProject/0x-launch-kit-backend.git
+$ cd 0x-launch-kit-backend/</code></pre></div>
+
+<p>Open <code>yarn.lock</code> file and replace all line <code>&quot;@0x/contract-addresses&quot; &quot;^3.0.1&quot;</code> with <code>&quot;@0x/contract-addresses&quot; &quot;file:../0x-monorepo/packages/contract-addresses&quot;</code>. I know that&rsquo;s pretty tricky but i think it&rsquo;s the easiest way to use our <code>contract-addresses</code> packages.</p>
+
+<p>Now install the dependencies with &ndash;frozen-lockfile flag</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn install --frozen-lockfile</code></pre></div>
+
+<p>We will use the Typescript code base</p>
+
+<ul>
+<li>Delete the js directory</li>
+<li>Delete all scripts from package.json that end with :js</li>
+</ul>
+
+<p>Open <code>ts/src/config.ts</code> file, edit WHITELISTED_TOKENS with ZRX and WETH tokens you deployed:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">WHITELISTED_TOKENS</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">string</span>[] <span style="color:#f92672">|</span> <span style="color:#e6db74">&#39;*&#39;</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">_</span>.<span style="color:#a6e22e">isEmpty</span>(<span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">WHITELIST_ALL_TOKENS</span>)
+    <span style="color:#f92672">?</span> [
+          <span style="color:#e6db74">&#39;0xb1b57aca0977fdc772bda3ee292b189f363bcea0&#39;</span>, <span style="color:#75715e">// ZRX on Matic
+</span><span style="color:#75715e"></span>          <span style="color:#e6db74">&#39;0xbf4263c8842b48c2f7cb1ceb237ae0207952edab&#39;</span>, <span style="color:#75715e">// WETH on Matic
+</span><span style="color:#75715e"></span>      ]
+    <span style="color:#f92672">:</span> <span style="color:#a6e22e">assertEnvVarType</span>(<span style="color:#e6db74">&#39;WHITELIST_ALL_TOKENS&#39;</span>, <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">WHITELIST_ALL_TOKENS</span>, <span style="color:#a6e22e">EnvVarType</span>.<span style="color:#a6e22e">WhitelistAllTokens</span>);
+</code></pre></div>
+
+<p>Open <code>.env</code> and paste this content</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">NETWORK_ID</span><span style="color:#f92672">=</span><span style="color:#ae81ff">8995</span>
+<span style="color:#a6e22e">RPC_URL</span><span style="color:#f92672">=</span><span style="color:#a6e22e">https</span><span style="color:#f92672">:</span><span style="color:#75715e">//testnet2.matic.network
+</span></code></pre></div>
+
+<p>Build the project and start the relayer</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn build:ts
+$ yarn start:ts</code></pre></div>
+
+<p>To quickly check if your relayer is up-and-running, send it this CURL request from other terminal:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl http://localhost:3000/v2/orders
+<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;total&#34;</span>:0,<span style="color:#e6db74">&#34;page&#34;</span>:1,<span style="color:#e6db74">&#34;perPage&#34;</span>:20,<span style="color:#e6db74">&#34;records&#34;</span>:<span style="color:#f92672">[]}</span></code></pre></div>
+
+<h2 id="start-0x-launch-kit-frontend">Start 0x-launch-kit-frontend</h2>
+
+<p>Clone the 0x-launch-kit-frontend in the same parent directory with 0x-monorepo and 0x-launch-kit-backend.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/0xProject/0x-launch-kit-frontend.git
+$ cd 0x-launch-kit-frontend/</code></pre></div>
+
+<p>Similar to the backend, open <code>yarn.lock</code> file and replace all line <code>&quot;@0x/contract-addresses&quot; &quot;^3.0.1&quot;</code> with <code>&quot;@0x/contract-addresses&quot; &quot;file:../0x-monorepo/packages/contract-addresses&quot;</code>, then install the dependencies with &ndash;frozen-lockfile flag</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn install --frozen-lockfile</code></pre></div>
+
+<p>Open <code>src/common/constants.ts</code> file, change the DEFAULT_GAS_PRICE to zero</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">DEFAULT_GAS_PRICE</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">BigNumber</span>(<span style="color:#ae81ff">0</span>);
+</code></pre></div>
+
+<p>Open <code>src/util/types.ts</code> file, add <code>matic</code> to network enum</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">Network</span> {
+    <span style="color:#a6e22e">Mainnet</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+    <span style="color:#a6e22e">Rinkeby</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>,
+    <span style="color:#a6e22e">Kovan</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>,
+    <span style="color:#a6e22e">Ganache</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>,
+    <span style="color:#a6e22e">Matic</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">8995</span>,
+}
+</code></pre></div>
+
+<p>Update <code>src/config.json</code> with our addresses</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;general&#34;</span>: {
+        <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Launch Kit&#34;</span>
+    },
+    <span style="color:#f92672">&#34;tokens&#34;</span>: [
+        {
+            <span style="color:#f92672">&#34;symbol&#34;</span>: <span style="color:#e6db74">&#34;zrx&#34;</span>,
+            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;0x Protocol Token&#34;</span>,
+            <span style="color:#f92672">&#34;primaryColor&#34;</span>: <span style="color:#e6db74">&#34;#333333&#34;</span>,
+            <span style="color:#f92672">&#34;icon&#34;</span>: <span style="color:#e6db74">&#34;assets/icons/zrx.svg&#34;</span>,
+            <span style="color:#f92672">&#34;addresses&#34;</span>: {
+                <span style="color:#f92672">&#34;1&#34;</span>: <span style="color:#e6db74">&#34;0xE41d2489571d322189246DaFA5ebDe1F4699F498&#34;</span>,
+                <span style="color:#f92672">&#34;3&#34;</span>: <span style="color:#e6db74">&#34;0xff67881f8d12f372d91baae9752eb3631ff0ed00&#34;</span>,
+                <span style="color:#f92672">&#34;4&#34;</span>: <span style="color:#e6db74">&#34;0x8080c7e4b81ecf23aa6f877cfbfd9b0c228c6ffa&#34;</span>,
+                <span style="color:#f92672">&#34;42&#34;</span>: <span style="color:#e6db74">&#34;0x2002d3812f58e35f0ea1ffbf80a75a38c32175fa&#34;</span>,
+                <span style="color:#f92672">&#34;50&#34;</span>: <span style="color:#e6db74">&#34;0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c&#34;</span>,
+                <span style="color:#f92672">&#34;8995&#34;</span>: <span style="color:#e6db74">&#34;0xb1b57aca0977fdc772bda3ee292b189f363bcea0&#34;</span>
+            },
+            <span style="color:#f92672">&#34;decimals&#34;</span>: <span style="color:#ae81ff">18</span>,
+            <span style="color:#f92672">&#34;displayDecimals&#34;</span>: <span style="color:#ae81ff">2</span>
+        },
+        {
+            <span style="color:#f92672">&#34;symbol&#34;</span>: <span style="color:#e6db74">&#34;weth&#34;</span>,
+            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Wrapped Ether&#34;</span>,
+            <span style="color:#f92672">&#34;primaryColor&#34;</span>: <span style="color:#e6db74">&#34;#3333ff&#34;</span>,
+            <span style="color:#f92672">&#34;icon&#34;</span>: <span style="color:#e6db74">&#34;assets/icons/weth.svg&#34;</span>,
+            <span style="color:#f92672">&#34;addresses&#34;</span>: {
+                <span style="color:#f92672">&#34;1&#34;</span>: <span style="color:#e6db74">&#34;0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&#34;</span>,
+                <span style="color:#f92672">&#34;3&#34;</span>: <span style="color:#e6db74">&#34;0xc778417e063141139fce010982780140aa0cd5ab&#34;</span>,
+                <span style="color:#f92672">&#34;4&#34;</span>: <span style="color:#e6db74">&#34;0xc778417e063141139fce010982780140aa0cd5ab&#34;</span>,
+                <span style="color:#f92672">&#34;42&#34;</span>: <span style="color:#e6db74">&#34;0xd0a1e359811322d97991e03f863a0c30c2cf029c&#34;</span>,
+                <span style="color:#f92672">&#34;50&#34;</span>: <span style="color:#e6db74">&#34;0x0b1ba0af832d7c05fd64161e0db78e85978e8082&#34;</span>,
+                <span style="color:#f92672">&#34;8995&#34;</span>: <span style="color:#e6db74">&#34;0xbf4263c8842b48c2f7cb1ceb237ae0207952edab&#34;</span>
+            },
+            <span style="color:#f92672">&#34;decimals&#34;</span>: <span style="color:#ae81ff">18</span>,
+            <span style="color:#f92672">&#34;displayDecimals&#34;</span>: <span style="color:#ae81ff">2</span>
+        }
+    ],
+    <span style="color:#f92672">&#34;pairs&#34;</span>: [
+        {
+            <span style="color:#f92672">&#34;base&#34;</span>: <span style="color:#e6db74">&#34;zrx&#34;</span>,
+            <span style="color:#f92672">&#34;quote&#34;</span>: <span style="color:#e6db74">&#34;weth&#34;</span>
+        }
+    ],
+    <span style="color:#f92672">&#34;marketFilters&#34;</span>: [
+        {
+            <span style="color:#f92672">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;ETH&#34;</span>,
+            <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;weth&#34;</span>
+        }
+    ]
+}</code></pre></div>
+
+<p>Start the frontend using our above relayer (restart the backend if you stoped it)</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ REACT_APP_NETWORK_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;8995&#39;</span> REACT_APP_RELAYER_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://localhost:3000/v2&#39;</span> yarn start</code></pre></div>
+
+<p>Go to <a href="http://localhost:3001/#/erc20">http://localhost:3001/#/erc20</a>, don&rsquo;t forget install Metamask and configure it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+
+<p><img src="/matic/14.png" alt="matic14" title="No Metamask" /></p>
+
+<p><img src="/matic/15.png" alt="matic15" title="Wrong network" /></p>
+
+<p><img src="/matic/16.png" alt="matic16" title="Ok" /></p>
+
+<p>Thanks for reading and I do hope you found this article somewhat helpful.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

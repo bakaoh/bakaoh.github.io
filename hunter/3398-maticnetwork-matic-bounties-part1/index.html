@@ -124,36 +124,32 @@
 
 <p>Folk and clone the uniswap-frontend</p>
 
-<pre><code>$ git clone https://github.com/Uniswap/uniswap-frontend
-$ cd uniswap-frontend
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/Uniswap/uniswap-frontend
+$ cd uniswap-frontend</code></pre></div>
 
 <p>Install the dependencies</p>
 
-<pre><code>$ yarn
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn</code></pre></div>
 
 <p>Rename <code>.env.local.example</code> to <code>.env.local</code> and fill in the variables</p>
 
-<pre><code>REACT_APP_NETWORK_ID=&quot;8995&quot;
-REACT_APP_NETWORK_URL=&quot;https://testnet2.matic.network&quot;
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">REACT_APP_NETWORK_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;8995&#34;</span>
+REACT_APP_NETWORK_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://testnet2.matic.network&#34;</span></code></pre></div>
 
 <p>Update factory addresses in <code>src/constants/index.js</code> with your <code>uniswap_factory</code> address above</p>
 
-<pre><code class="language-js">export const FACTORY_ADDRESSES = {
-  1: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
-  3: '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351',
-  4: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
-  42: '0xD3E51Ef092B2845f10401a0159B2B96e8B6c3D30',
-  8995: '0x0f970cf1edebd269e48e085608e9bd334af0c07b'
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FACTORY_ADDRESSES</span> <span style="color:#f92672">=</span> {
+  <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95&#39;</span>,
+  <span style="color:#ae81ff">3</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351&#39;</span>,
+  <span style="color:#ae81ff">4</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36&#39;</span>,
+  <span style="color:#ae81ff">42</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0xD3E51Ef092B2845f10401a0159B2B96e8B6c3D30&#39;</span>,
+  <span style="color:#ae81ff">8995</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0x0f970cf1edebd269e48e085608e9bd334af0c07b&#39;</span>
 }
-</code></pre>
+</code></pre></div>
 
 <p>Run the font-end at local</p>
 
-<pre><code>$ yarn start
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn start</code></pre></div>
 
 <p><img src="/matic/9.png" alt="matic9" title="Frontend" /></p>
 
@@ -169,32 +165,28 @@ REACT_APP_NETWORK_URL=&quot;https://testnet2.matic.network&quot;
 
 <p>Install the <code>gh-pages</code> package from npm</p>
 
-<pre><code>$ yarn add gh-pages
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn add gh-pages</code></pre></div>
 
 <p>Open <code>package.json</code> file in your front-end root directory and update <code>homepage</code> url to your github repository. In my case, it is:</p>
 
-<pre><code class="language-json">{
-    &quot;name&quot;: &quot;uniswap&quot;,
-    &quot;description&quot;: &quot;Uniswap Exchange Protocol&quot;,
-    &quot;version&quot;: &quot;0.1.0&quot;,
-    &quot;homepage&quot;: &quot;https://bakaoh.github.io/uniswap-frontend&quot;,
-    ...
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;uniswap&#34;</span>,
+    <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Uniswap Exchange Protocol&#34;</span>,
+    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#e6db74">&#34;0.1.0&#34;</span>,
+    <span style="color:#f92672">&#34;homepage&#34;</span>: <span style="color:#e6db74">&#34;https://bakaoh.github.io/uniswap-frontend&#34;</span>,
+    <span style="color:#960050;background-color:#1e0010">...</span></code></pre></div>
 
 <p>Also in <code>package.json</code> file, add these lines in the <code>scripts</code> session</p>
 
-<pre><code class="language-json">&quot;scripts&quot;: {
-    ...
-    &quot;predeploy&quot;: &quot;yarn run build&quot;,
-    &quot;deploy&quot;: &quot;gh-pages -d build&quot;
-},
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;scripts&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#960050;background-color:#1e0010">...</span>
+    <span style="color:#f92672">&#34;predeploy&#34;</span>: <span style="color:#e6db74">&#34;yarn run build&#34;</span>,
+    <span style="color:#f92672">&#34;deploy&#34;</span>: <span style="color:#e6db74">&#34;gh-pages -d build&#34;</span>
+}<span style="color:#960050;background-color:#1e0010">,</span></code></pre></div>
 
 <p>Deploy to your repository</p>
 
-<pre><code>$ yarn run deploy
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn run deploy</code></pre></div>
 
 <p>Your Uniswap using contracts on Matic testnet is now live on <a href="https://bakaoh.github.io/uniswap-frontend">gh-pages</a></p>
 
