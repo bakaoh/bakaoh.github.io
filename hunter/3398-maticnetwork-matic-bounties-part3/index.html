@@ -100,20 +100,9 @@ $ yarn install</code></pre></div>
 
 <p>After few seconds (Matic testnet is really fast!) we should see our deployed contract addresses</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">transactionHash: ...
-ERC20Proxy successfully deployed at ...
-transactionHash: ...
-ERC721Proxy successfully deployed at ...
-transactionHash: ...
-ZRXToken successfully deployed at ...
-transactionHash: ...
-WETH9 successfully deployed at ...
-transactionHash: ...
-Exchange successfully deployed at ...
-transactionHash: ...
-...</code></pre></div>
+<p><img src="/matic/17.png" alt="matic17" title="Deployed" /></p>
 
-<p>You can place these addresses to the explorer URL, like this <a href="https://explorer.testnet2.matic.network/address/0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7">https://explorer.testnet2.matic.network/address/0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7</a>, to make sure the contracts is correctly deployed on Matic.</p>
+<p>You can place these addresses to the explorer URL, like <a href="https://explorer.testnet2.matic.network/address/0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7">this</a>, to make sure the contracts is correctly deployed on Matic.</p>
 
 <p>Open <code>packages/contract-addresses/src/index.ts</code>, append <code>Matic</code> to network id list and put our addresses above to <code>networkToAddresses</code> (<a href="https://github.com/bakaoh/0x-monorepo/blob/matic/packages/contract-addresses/src/index.ts">view file</a>)</p>
 
@@ -161,7 +150,7 @@ transactionHash: ...
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/0xProject/0x-launch-kit-backend.git
 $ cd 0x-launch-kit-backend/</code></pre></div>
 
-<p>Open <code>yarn.lock</code> file and replace all line <code>&quot;@0x/contract-addresses&quot; &quot;^3.0.1&quot;</code> with <code>&quot;@0x/contract-addresses&quot; &quot;file:../0x-monorepo/packages/contract-addresses&quot;</code>. I know that&rsquo;s pretty tricky but i think it&rsquo;s the easiest way to use our <code>contract-addresses</code> packages.</p>
+<p>Open <code>yarn.lock</code> file and replace all line <code>&quot;@0x/contract-addresses&quot; &quot;^3.0.1&quot;</code> with <code>&quot;@0x/contract-addresses&quot; &quot;file:../0x-monorepo/packages/contract-addresses&quot;</code>. I know that&rsquo;s pretty tricky but i think it&rsquo;s the easiest way to use our <code>contract-addresses</code> package.</p>
 
 <p>Now install the dependencies with &ndash;frozen-lockfile flag</p>
 
@@ -281,7 +270,7 @@ $ cd 0x-launch-kit-frontend/</code></pre></div>
     ]
 }</code></pre></div>
 
-<p>Start the frontend using our above relayer (restart the backend if you stoped it)</p>
+<p>Start the frontend using our above relayer (restart the backend if you stopped it)</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ REACT_APP_NETWORK_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;8995&#39;</span> REACT_APP_RELAYER_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://localhost:3000/v2&#39;</span> yarn start</code></pre></div>
 

@@ -6,10 +6,22 @@
     <description>Recent content on BAKAOH</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Sep 2019 09:39:36 +0700</lastBuildDate>
+    <lastBuildDate>Wed, 11 Sep 2019 14:45:36 +0700</lastBuildDate>
     
 	<atom:link href="https://bakaoh.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Deploying Kyber on the Matic testnet</title>
+      <link>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part4/</link>
+      <pubDate>Wed, 11 Sep 2019 14:45:36 +0700</pubDate>
+      
+      <guid>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part4/</guid>
+      <description>Matic Network is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.
+0x is an on-chain liquidity protocol that aggregates liquidity from a wide range of reserves, powering instant and secure token exchange in any decentralized application.
+This guide will take you through:
+ Deploying Kyber contracts on Matic testnet Updating KyberSwap frontend to work with these contracts Deploying the frontend to IPFS  Pre-requisite Our migrate project using package aliases, we will need npm v6.</description>
+    </item>
     
     <item>
       <title>Deploying 0x on the Matic testnet</title>

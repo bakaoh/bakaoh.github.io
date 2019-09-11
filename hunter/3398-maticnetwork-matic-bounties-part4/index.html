@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deploying Kyber on the Matic testnet &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.com/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Deploying Kyber on the Matic testnet</h1>
+  <time datetime=2019-09-11T14:45:36&#43;0700 class="post-date">Wed, Sep 11, 2019</time>
+  
+
+<p><a href="https://matic.network/">Matic Network</a> is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.</p>
+
+<p><a href="https://kyber.network/">0x</a> is an on-chain liquidity protocol that aggregates liquidity from a wide range of reserves, powering instant and secure token exchange in any decentralized application.</p>
+
+<p>This guide will take you through:</p>
+
+<ul>
+<li>Deploying Kyber contracts on Matic testnet</li>
+<li>Updating KyberSwap frontend to work with these contracts</li>
+<li>Deploying the frontend to IPFS</li>
+</ul>
+
+<h2 id="pre-requisite">Pre-requisite</h2>
+
+<p>Our migrate project using package aliases, we will need <a href="https://github.com/npm/cli/releases/tag/v6.9.0">npm v6.9.0+</a>.</p>
+
+<p>To see which version you have</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm -v </code></pre></div>
+
+<p>then install the newest npm update if needed</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install npm@latest -g</code></pre></div>
+
+<h2 id="deploy-contracts">Deploy contracts</h2>
+
+<p>I tried to deploy Kyber network contracts using their scripts in <a href="https://github.com/KyberNetwork/smart-contracts">smart-contracts</a> repository but got no luck. The deploy scripts in master branch seem out-of-sync with the contracts. Also i didn&rsquo;t find the Swap contract in any branch.</p>
+
+<p>Eventually i used <a href="https://etherscan.io">https://etherscan.io</a> to get the current mainnet contracts source code. For example, their <code>KyberSwapLimitOrder</code> can be found <a href="https://etherscan.io/address/0x52d35e8f0ffa18337b093aec3dfff40445d8f4f4#code">here</a>.</p>
+
+<p>To make this article easier to follow, i collected all needed contracts in <a href="https://github.com/bakaoh/kyber-matic">this</a> repository.</p>
+
+<p>Clone the repository and install node dependencies</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/bakaoh/kyber-matic.git
+$ cd kyber-matic/
+$ npm install</code></pre></div>
+
+<p>Deploy the contracts</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm run migrate</code></pre></div>
+
+<p>You don&rsquo;t need to input a deploy address and its private key because the script randomly creats and prints them out. Keep the private key in safe place, you will need it to operate the Kyber contracts, or use it to transfer the admin role to another address.</p>
+
+<p>As always, the deployment process on Matic testnet will just take few seconds. The output contains the all the needed addresses</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Deploy from:  0x8B4410C882dC2e01e1dE3022f0cd94C7D82723bF
+Private key:  0x2d8f7c4810608f7fd1d258288e1c2dd9b171c0a07493324f4f3b989bad51f4fe
+Starting compilation
+Finished compilation
+KyberNetworkCrystal:  0xa8274022E892fAFaC6a244200d38f9d3e4b5DbBd
+KyberNetworkProxy:  0xfB6bC957AcfcAd5bfe32dD66081F797fF6CD0974
+KyberNetwork:  0x5BbF1cE19E6b7A40435DF83f8D4aC60D8E7E48B9
+ExpectedRate:  0x1d463bc37056EB4763D6A94B3F823955a04854Ed
+FeeBurner:  0x3AB6ec775ffABF490DE41E74D8E98AB015a75f20
+ConversionRates:  0x41ea11A0922604b7caF3D1D9E132De400Eb80cc2
+KyberReserve:  0xB1445813d21DfB29A93E6DBBEf77A270BEf3b63A
+KyberSwapLimitOrder:  0x985DfF5d7AA2107253b45866AaB5B9588e6D8c3f</code></pre></div>
+
+<p>You can place these addresses to the explorer URL, like <a href="https://explorer.testnet2.matic.network/address/0xa8274022E892fAFaC6a244200d38f9d3e4b5DbBd">this</a>, to make sure the contracts is correctly deployed on Matic.</p>
+
+<p>The <code>migrate</code> command also update <code>matic.json</code> file in the root directory with the new addresses.</p>
+
+<h2 id="update-kyberswap-frontend">Update KyberSwap frontend</h2>
+
+<p>Clone the repository and install node dependencies</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/KyberNetwork/KyberSwap.git
+$ cd KyberSwap/
+$ npm ci</code></pre></div>
+
+<p>Copy <code>matic.json</code> file created in the previous session to <code>env/config-env/</code> folder. Your <code>env/config-env/</code> folder will look like this</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ls -1 env/config-env/
+matic.json
+production.json
+rinkeby.json
+ropsten.json
+staging.json
+staging_limit_order.json</code></pre></div>
+
+<p>Open <code>package.json</code> file and add these lines to the scripts session</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">...
+<span style="color:#e6db74">&#34;build-matic&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;NODE_ENV=matic node webpack-wrapper.js&#34;</span>,
+<span style="color:#e6db74">&#34;matic&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;webpack-dev-server --content-base src --inline --hot --history-api-fallback --host 0.0.0.0 --port 3002 --env.chain=matic --env.logger=true&#34;</span>,
+...
+</code></pre></div>
+
+<p>Open <code>src/js/services/ethereum/nodeProviders/BaseProvider.js</code> file, find <code>getRateAtSpecificBlock</code> function, you will see a rpc call like this</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">call</span>({
+    <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">BLOCKCHAIN_INFO</span>.<span style="color:#a6e22e">network</span>,
+    <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>
+}, <span style="color:#a6e22e">blockno</span>)
+</code></pre></div>
+
+<p>Remove the <code>blockno</code> parameter in that call</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">call</span>({
+    <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">BLOCKCHAIN_INFO</span>.<span style="color:#a6e22e">network</span>,
+    <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>
+})
+</code></pre></div>
+
+<p>Run the frontend and go to <a href="http://localhost:3002">http://localhost:3002</a> to see the result</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm run matic</code></pre></div>
+
+<p><img src="/matic/18.png" alt="matic18" title="Kyber" /></p>
+
+<p>Don&rsquo;t forget install Metamask and configure it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+
+<h2 id="deploy-frontend">Deploy frontend</h2>
+
+<p>Build the frontend</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm run build-matic</code></pre></div>
+
+<p>A new directory <code>matic</code> will be created in the <code>dist</code> folder.</p>
+
+<p>Copy these files/folders from <code>dist/ropsten</code> to your <code>dist/matic</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">- trading_view/
+- foundation-float.min.css
+- foundation-prototype.min.css
+- 0f7ddc24583501b1de6e5e652c6fb450.png
+- aed5c16656d0b0cff3bf115adcd3935d.svg
+- ea54324259d087da144746490d84dcb8.ttf
+- 66313f98b4b49bebfc632fcdebe6a8bb.svg
+- 9c46095118380d38f12e67c916b427f9.ttf
+- a98626e1aef6ceba5dfc1ee7112e235a.ttf
+- c88cecbffad6d8e731fd95de49561ebd.ttf</code></pre></div>
+
+<p>Check to see the build version work as expected</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd dist/matic/
+$ python3 -m http.server
+Go to http://localhost:8000</code></pre></div>
+
+<p>Deploy the frontend to ipfs is just a few steps away using <a href="https://www.npmjs.com/package/ipfs-deploy">ipfs-deploy</a></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install -g ipfs-deploy
+$ ipfs-deploy dist/matic</code></pre></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>There&rsquo;re till some internal api that the Kyber team hasn&rsquo;t open source yet, so you may see errors in browser console.</p>
+
+<p>To operate the network, you may need some basic understanding of their model. The <a href="https://developer.kyber.network/docs/Start/">developer document</a> is a good start. Some actions should be done next is</p>
+
+<ul>
+<li>Add admin, operator, alerter for KyberNetwork, KyberReserve, ConversionRates, FeeBurner, ExpectedRate contracts</li>
+<li>Set expected rate parameters</li>
+<li>Set burn fee parameters</li>
+<li>Set conversion rate parameters</li>
+<li>List token</li>
+</ul>
+
+<p>Thanks for reading and I do hope you found this article somewhat helpful.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
