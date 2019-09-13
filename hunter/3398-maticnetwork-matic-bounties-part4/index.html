@@ -54,7 +54,7 @@
 
 <p><a href="https://matic.network/">Matic Network</a> is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.</p>
 
-<p><a href="https://kyber.network/">0x</a> is an on-chain liquidity protocol that aggregates liquidity from a wide range of reserves, powering instant and secure token exchange in any decentralized application.</p>
+<p><a href="https://kyber.network/">Kyber Network</a> is an on-chain liquidity protocol that aggregates liquidity from a wide range of reserves, powering instant and secure token exchange in any decentralized application.</p>
 
 <p>This guide will take you through:</p>
 
@@ -70,11 +70,11 @@
 
 <p>To see which version you have</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm -v </code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm -v </code></pre></div>
 
 <p>then install the newest npm update if needed</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install npm@latest -g</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install npm@latest -g</code></pre></div>
 
 <h2 id="deploy-contracts">Deploy contracts</h2>
 
@@ -163,7 +163,7 @@ staging_limit_order.json</code></pre></div>
 
 <p><img src="/matic/18.png" alt="matic18" title="Kyber" /></p>
 
-<p>Don&rsquo;t forget install Metamask and configure it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+<p>Don&rsquo;t forget installing Metamask and configuring it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
 
 <h2 id="deploy-frontend">Deploy frontend</h2>
 
@@ -186,7 +186,7 @@ staging_limit_order.json</code></pre></div>
 - a98626e1aef6ceba5dfc1ee7112e235a.ttf
 - c88cecbffad6d8e731fd95de49561ebd.ttf</code></pre></div>
 
-<p>Check to see the build version work as expected</p>
+<p>Check if the build version work as expected</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd dist/matic/
 $ python3 -m http.server
@@ -196,6 +196,8 @@ Go to http://localhost:8000</code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ npm install -g ipfs-deploy
 $ ipfs-deploy dist/matic</code></pre></div>
+
+<p>You may deploy it to <a href="https://bakaoh.github.io/kyber-matic">gh-pages</a> or any web server of your choice.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 

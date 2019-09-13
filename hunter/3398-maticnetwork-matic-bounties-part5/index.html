@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deploying BZx on the Matic testnet &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.com/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Deploying BZx on the Matic testnet</h1>
+  <time datetime=2019-09-11T14:45:36&#43;0700 class="post-date">Wed, Sep 11, 2019</time>
+  
+
+<p><a href="https://matic.network/">Matic Network</a> is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.</p>
+
+<p><a href="https://bzx.network">BZx</a> is a protocol for next generation (b)0x-standard relays.</p>
+
+<p>This guide will take you through:</p>
+
+<ul>
+<li>Deploying BZx contracts on Matic testnet</li>
+<li>Updating BZx portal to work with these contracts</li>
+<li>Deploying the portal to webserver</li>
+</ul>
+
+<h2 id="deploy-bzx-contracts">Deploy BZx contracts</h2>
+
+<p>Clone bZx-monorepo repository and checkout <code>master</code> branch, install node dependencies</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git clone https://github.com/bZxNetwork/bZx-monorepo.git
+$ cd bZx-monorepo/
+$ git checkout master
+$ yarn install</code></pre></div>
+
+<p>Open <code>packages/contracts/truffle-config.js</code> file, add <strong>matic</strong> config, you can replace <code>fae420...</code> with your private key</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">...
+<span style="color:#a6e22e">matic</span><span style="color:#f92672">:</span> {
+    <span style="color:#a6e22e">provider</span><span style="color:#f92672">:</span> () =&gt; <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PrivateKeyProvider</span>(
+        <span style="color:#e6db74">&#39;fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a&#39;</span>,
+        <span style="color:#e6db74">&#39;https://testnet2.matic.network&#39;</span>
+    ),
+    <span style="color:#a6e22e">network_id</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">8995</span>,
+    <span style="color:#a6e22e">gas</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6721975</span>,
+    <span style="color:#a6e22e">gasPrice</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
+    <span style="color:#a6e22e">confirmations</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
+    <span style="color:#a6e22e">timeoutBlocks</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">200</span>,
+    <span style="color:#a6e22e">skipDryRun</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+},
+...
+</code></pre></div>
+
+<p>Open <code>packages/contracts/protocol-config.js</code>, add <strong>matic</strong> config</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">...
+<span style="color:#a6e22e">matic</span><span style="color:#f92672">:</span> {
+    <span style="color:#a6e22e">ZeroEx</span><span style="color:#f92672">:</span> {
+        <span style="color:#a6e22e">ExchangeV1</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0x6b3ed046d4b7c237c4849e2d7fbdb34e4a2a5a95&#34;</span>,
+        <span style="color:#a6e22e">ExchangeV2</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xd30d3d36daa6da31d481c19eaccd94558c1aa594&#34;</span>,
+        <span style="color:#a6e22e">ERC20Proxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0x0a53e142138c0d68f5cf968cc74c6f633df57f6b&#34;</span>,
+        <span style="color:#a6e22e">ERC721Proxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0x8fb632da59e73450e097847c0c75608f79770182&#34;</span>,
+        <span style="color:#a6e22e">ZRXToken</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xb1b57aca0977fdc772bda3ee292b189f363bcea0&#34;</span>,
+        <span style="color:#a6e22e">AssetProxyOwner</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0x1f02042d523d9d8b5eafe6eb6d2945b1cf14dd2d&#34;</span>,
+        <span style="color:#a6e22e">TokenTransferProxy</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xd689d03d444d292642014354891d970ce9195848&#34;</span>,
+        <span style="color:#a6e22e">WETH9</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xbf4263c8842b48c2f7cb1ceb237ae0207952edab&#34;</span>
+    },
+    <span style="color:#a6e22e">KyberContractAddress</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;0xfB6bC957AcfcAd5bfe32dD66081F797fF6CD0974&#34;</span>,
+    <span style="color:#a6e22e">DAITokenAddress</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+},
+...
+</code></pre></div>
+
+<p>These are 0x and Kyber addresses that i deployed on Matic, you could follow <a href="https://medium.com/@batatsar/deploying-0x-on-the-matic-testnet-c39e1407d02c">this guide</a> and <a href="https://medium.com/@batatsar/deploying-kyber-on-the-matic-testnet-8d1bc49ffc41">this guide</a> to deploy them yourself.</p>
+
+<p>Open <code>packages.json</code> add <code>migrate:matic</code> to <code>scripts</code> session</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;migrate:matic&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#e6db74">&#34;truffle migrate --network matic&#34;</span><span style="color:#960050;background-color:#1e0010">,</span></code></pre></div>
+
+<p>Open <code>packages/contracts/contracts/oracle/OracleInterface.sol</code> file, go to line 105 and un-comment <code>gasUsed</code> parameter, otherwise the compiler will complain <code>DocstringParsingError: Documented parameter &quot;gasUsed&quot; not found in the parameter list of the function.</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#66d9ef">function</span> didPayInterestByLender(
+    <span style="color:#66d9ef">address</span> lender,
+    <span style="color:#66d9ef">address</span> interestTokenAddress,
+    <span style="color:#66d9ef">uint256</span> amountOwed,
+    <span style="color:#66d9ef">uint256</span> gasUsed)
+    <span style="color:#66d9ef">public</span>
+    <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);</code></pre></div>
+
+<p>Modify migration scripts at these places:</p>
+
+<ol>
+<li><code>packages/contracts/migrations/5_deploy_BZRxToken.js</code>, line 11, add <code>} else if (network == &quot;matic&quot;) {</code></li>
+<li><code>packages/contracts/migrations/7_deploy_BZRxTokenConvert.js</code>, line 21, add this block
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">network</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;matic&#34;</span>) {
+    <span style="color:#a6e22e">bzrx_token_address</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">BZRxToken</span>.<span style="color:#a6e22e">address</span>
+    <span style="color:#a6e22e">weth_token_address</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">config</span>[<span style="color:#e6db74">&#34;addresses&#34;</span>][<span style="color:#a6e22e">network</span>][<span style="color:#e6db74">&#34;ZeroEx&#34;</span>][<span style="color:#e6db74">&#34;WETH9&#34;</span>]; <span style="color:#75715e">//BZxEther.address; 
+</span><span style="color:#75715e"></span>} 
+</code></pre></div></li>
+<li><code>packages/contracts/migrations/13_deploy_BZxOracle.js</code>, comment out line 80-81, add this block at line 26
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">network</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;matic&#34;</span>) {
+    <span style="color:#a6e22e">weth_token_address</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">BZxEther</span>.<span style="color:#a6e22e">address</span>;
+} 
+</code></pre></div></li>
+<li><code>packages/contracts/migrations/17_deploy_TokenRegistry.js</code>, line 15, comment out <code>return;</code></li>
+</ol>
+
+<p>Now deploy the contracts</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd packages/contracts/
+$ yarn migrate:matic
+...
+Summary
+<span style="color:#f92672">=======</span>
+&gt; Total deployments:   <span style="color:#ae81ff">23</span>
+&gt; Final cost:          <span style="color:#ae81ff">0</span> ETH
+
+Done in <span style="color:#ae81ff">1089</span>.79s.</code></pre></div>
+
+<p>Next, we will update <code>bzx.js</code> package to support Matic testnet.</p>
+
+<h2 id="build-bzx-js">Build bzx.js</h2>
+
+<p>Still in <code>packages/contracts/</code> directory, run this command to create <code>packages/contracts/test_network</code> folder</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn network:deploy</code></pre></div>
+
+<p>Open <code>packages/contracts/extra/generate_test_assets.js</code> file, add <strong>matic</strong> case in the switch at line 100</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;matic&#34;</span><span style="color:#f92672">:</span>
+    <span style="color:#a6e22e">networkId</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">8995</span>;
+    <span style="color:#66d9ef">break</span>;
+</code></pre></div>
+
+<p>Run these commands to create <code>packages/contracts/html_public_test/deployed</code> and move that folder to <code>bzx.js/src/contracts</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ node ./extra/generate_test_assets.js matic
+$ mv html_public_test/deployed/ ../bzx.js/src/contracts/matic </code></pre></div>
+
+<p>Create <code>packages/bzx.js/src/contracts/matic/TokenTransferProxy.json</code> file with this content, use the same <code>TokenTransferProxy</code> address as in <code>packages/contracts/protocol-config.js</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{ <span style="color:#f92672">&#34;address&#34;</span>: <span style="color:#e6db74">&#34;0xd689d03d444d292642014354891d970ce9195848&#34;</span>, <span style="color:#f92672">&#34;abi&#34;</span>: [] }</code></pre></div>
+
+<p>Copy <code>packages/bzx.js/src/contracts/kovan/index.js</code> to <code>packages/bzx.js/src/contracts/matic/</code></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cp packages/bzx.js/src/contracts/kovan/index.js packages/bzx.js/src/contracts/matic/</code></pre></div>
+
+<p>Replace <code>packages/bzx.js/src/contracts/index.js</code> file with this content</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">map</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;ramda&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_local</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./local&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_mainnet</span>, { <span style="color:#a6e22e">TokenList</span> <span style="color:#a6e22e">as</span> <span style="color:#a6e22e">mainnetTokens</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./mainnet&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_ropsten</span>, { <span style="color:#a6e22e">TokenList</span> <span style="color:#a6e22e">as</span> <span style="color:#a6e22e">ropstenTokens</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./ropsten&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_rinkeby</span>, { <span style="color:#a6e22e">TokenList</span> <span style="color:#a6e22e">as</span> <span style="color:#a6e22e">rinkebyTokens</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./rinkeby&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_kovan</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./kovan&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">_matic</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;./matic&#34;</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">toLowerCase</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">map</span>(({ <span style="color:#a6e22e">address</span>, ...<span style="color:#a6e22e">rest</span> }) =&gt; ({
+  <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">address</span>.<span style="color:#a6e22e">toLowerCase</span>(),
+  ...<span style="color:#a6e22e">rest</span>
+}));
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">networksRaw</span> <span style="color:#f92672">=</span> {
+  <span style="color:#a6e22e">local</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_local</span>,
+  <span style="color:#a6e22e">mainnet</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_mainnet</span>,
+  <span style="color:#a6e22e">ropsten</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_ropsten</span>,
+  <span style="color:#a6e22e">kovan</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_kovan</span>,
+  <span style="color:#a6e22e">rinkeby</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_rinkeby</span>,
+  <span style="color:#a6e22e">matic</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">_matic</span>
+};
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">networks</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">network</span> =&gt; <span style="color:#a6e22e">toLowerCase</span>(<span style="color:#a6e22e">network</span>), <span style="color:#a6e22e">networksRaw</span>);
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">local</span>, <span style="color:#a6e22e">mainnet</span>, <span style="color:#a6e22e">ropsten</span>, <span style="color:#a6e22e">kovan</span>, <span style="color:#a6e22e">rinkeby</span>, <span style="color:#a6e22e">matic</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">networks</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">networksById</span> <span style="color:#f92672">=</span> {
+  <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">mainnet</span>,
+  <span style="color:#ae81ff">3</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ropsten</span>,
+  <span style="color:#ae81ff">4</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">rinkeby</span>,
+  <span style="color:#ae81ff">42</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">kovan</span>,
+  <span style="color:#ae81ff">8995</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">matic</span>
+};
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tokensById</span> <span style="color:#f92672">=</span> {
+  <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">mainnetTokens</span>,
+  <span style="color:#ae81ff">3</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ropstenTokens</span>,
+  <span style="color:#ae81ff">4</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">rinkebyTokens</span>
+};
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oraclesById</span> <span style="color:#f92672">=</span> {};
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getContracts</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">networkId</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>) =&gt;
+  <span style="color:#a6e22e">networksById</span>[<span style="color:#a6e22e">networkId</span>] <span style="color:#f92672">?</span> <span style="color:#a6e22e">networksById</span>[<span style="color:#a6e22e">networkId</span>] <span style="color:#f92672">:</span> <span style="color:#a6e22e">local</span>;
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tokenList</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">networkId</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>) =&gt;
+  <span style="color:#a6e22e">tokensById</span>[<span style="color:#a6e22e">networkId</span>] <span style="color:#f92672">?</span> <span style="color:#a6e22e">toLowerCase</span>(<span style="color:#a6e22e">tokensById</span>[<span style="color:#a6e22e">networkId</span>]) <span style="color:#f92672">:</span> <span style="color:#66d9ef">undefined</span>;
+
+<span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oracleList</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">networkId</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>) =&gt;
+  <span style="color:#a6e22e">oraclesById</span>[<span style="color:#a6e22e">networkId</span>] <span style="color:#f92672">?</span> <span style="color:#a6e22e">oraclesById</span>[<span style="color:#a6e22e">networkId</span>] <span style="color:#f92672">:</span> <span style="color:#66d9ef">undefined</span>;
+</code></pre></div>
+
+<p>Build <code>bzx.js</code> package</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd ../bzx.js/
+$ yarn build</code></pre></div>
+
+<h2 id="update-bzx-portal">Update BZx portal</h2>
+
+<p>Open <code>packages/portal/package.json</code>, change <code>@bzxnetwork/bzx.js</code> dependency to local</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">...</span>
+<span style="color:#e6db74">&#34;dependencies&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#960050;background-color:#1e0010">...</span>
+    <span style="color:#f92672">&#34;@bzxnetwork/bzx.js&#34;</span>: <span style="color:#e6db74">&#34;file:../bzx.js&#34;</span>,
+    <span style="color:#960050;background-color:#1e0010">...</span>
+}<span style="color:#960050;background-color:#1e0010">,</span>
+<span style="color:#960050;background-color:#1e0010">...</span></code></pre></div>
+
+<p>In <code>packages/portal/src/orders/FillOrder/utils.jsx</code> and <code>packages/portal/src/orders/GenerateOrder/utils.jsx</code>, replace the BZxJS import with <code>import { BZxJS } from &quot;@bzxnetwork/bzx.js&quot;;</code></p>
+
+<p>Install dependencies and build <code>portal</code> package</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd ../portal/
+$ yarn
+$ yarn build</code></pre></div>
+
+<p><code>live_site</code> folder will be created, you can deploy it to your web server or github pages.</p>
+
+<p>Run a local web server to quickly check</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd live_site/
+$ python3 -m http.server
+Serving HTTP on <span style="color:#ae81ff">0</span>.0.0.0 port <span style="color:#ae81ff">8000</span> ...</code></pre></div>
+
+<p>Go to <code>http://localhost:8000</code>, don&rsquo;t forget installing Metamask and configuring it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+
+<p><img src="/matic/20.png" alt="matic20" title="BZx" /></p>
+
+<p>Phew, that&rsquo;s a lot of changes to make it works. You can checkout my branch
+<a href="https://github.com/bakaoh/bZx-monorepo/tree/matic">here</a> if there&rsquo;s anything unsure.</p>
+
+<p>Thanks for reading and I do hope you found this article somewhat helpful.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

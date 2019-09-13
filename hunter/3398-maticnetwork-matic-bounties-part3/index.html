@@ -143,7 +143,7 @@ $ yarn install</code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ PKG<span style="color:#f92672">=</span>@0x/contract-addresses yarn build</code></pre></div>
 
-<h2 id="start-0x-launch-kit-backend">Start 0x-launch-kit-backend</h2>
+<h2 id="run-0x-launch-kit-backend">Run 0x-launch-kit-backend</h2>
 
 <p>Clone the 0x-launch-kit-backend in the same parent directory with 0x-monorepo. Don&rsquo;t install the dependencies yet!</p>
 
@@ -189,7 +189,7 @@ $ yarn start:ts</code></pre></div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl http://localhost:3000/v2/orders
 <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;total&#34;</span>:0,<span style="color:#e6db74">&#34;page&#34;</span>:1,<span style="color:#e6db74">&#34;perPage&#34;</span>:20,<span style="color:#e6db74">&#34;records&#34;</span>:<span style="color:#f92672">[]}</span></code></pre></div>
 
-<h2 id="start-0x-launch-kit-frontend">Start 0x-launch-kit-frontend</h2>
+<h2 id="run-0x-launch-kit-frontend">Run 0x-launch-kit-frontend</h2>
 
 <p>Clone the 0x-launch-kit-frontend in the same parent directory with 0x-monorepo and 0x-launch-kit-backend.</p>
 
@@ -274,13 +274,67 @@ $ cd 0x-launch-kit-frontend/</code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ REACT_APP_NETWORK_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;8995&#39;</span> REACT_APP_RELAYER_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://localhost:3000/v2&#39;</span> yarn start</code></pre></div>
 
-<p>Go to <a href="http://localhost:3001/#/erc20">http://localhost:3001/#/erc20</a>, don&rsquo;t forget install Metamask and configure it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
+<p>Go to <a href="http://localhost:3001/#/erc20">http://localhost:3001/#/erc20</a>, don&rsquo;t forget installing Metamask and configuring it to Matic testnet. Follow the <a href="https://docs.matic.network/newbies/conf-testnet-metamask/">official document</a> for more details.</p>
 
 <p><img src="/matic/14.png" alt="matic14" title="No Metamask" /></p>
 
 <p><img src="/matic/15.png" alt="matic15" title="Wrong network" /></p>
 
 <p><img src="/matic/16.png" alt="matic16" title="Ok" /></p>
+
+<h2 id="appendix-deploy-0x-version-1">Appendix: Deploy 0x version 1</h2>
+
+<p>To deploy the version 1 contracts, checkout the <code>v1-protocol</code> branch of 0x-monorepo</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd 0x-monorepo/
+$ git checkout v1-protocol
+$ yarn install</code></pre></div>
+
+<p>Install <code>truffle-hdwallet-provider</code>, i tried to use <code>PrivateKeyWalletSubprovider</code> from <code>@0xproject/subproviders</code> but didn&rsquo;t succeed</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ yarn add truffle-hdwallet-provider</code></pre></div>
+
+<p>Replace <code>packages/migrations/src/migrate.ts</code> file with this content</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">#!/usr/bin/env node
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">logUtils</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@0xproject/utils&#39;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#a6e22e">HDWalletProvider</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;truffle-hdwallet-provider&#39;</span>);
+
+<span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">runMigrationsAsync</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./migration&#39;</span>;
+
+(<span style="color:#66d9ef">async</span> () =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">sender</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb&#39;</span>;
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">senderPk</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a&#39;</span>;
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">provider</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">HDWalletProvider</span>(<span style="color:#a6e22e">senderPk</span>, <span style="color:#e6db74">&#39;https://testnet2.matic.network&#39;</span>);
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">txDefaults</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">sender</span>.<span style="color:#a6e22e">toLowerCase</span>() };
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">artifactsDir</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;artifacts/1.0.0&#39;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">runMigrationsAsync</span>(<span style="color:#a6e22e">provider</span>, <span style="color:#a6e22e">artifactsDir</span>, <span style="color:#a6e22e">txDefaults</span>);
+    <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">exit</span>(<span style="color:#ae81ff">0</span>);
+})().<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">err</span> =&gt; {
+    <span style="color:#a6e22e">logUtils</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">err</span>);
+    <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">exit</span>(<span style="color:#ae81ff">1</span>);
+});
+</code></pre></div>
+
+<p>You may change the <code>sender</code> and <code>senderPk</code> with your address and private key</p>
+
+<p>Update <code>packages/migrations/src/migration.ts</code> file
+- Find the line <code>const accounts: string[] = await web3Wrapper.getAvailableAddressesAsync();</code>
+- Replace it with <code>const accounts: string[] = ['0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb', '0x685A01B16909eC890B548D9DFf6E7ABF4ec0A24e'];</code>
+- Feel free to change these two addresses with yours, make sure the first address is your <code>sender</code> above.</p>
+
+<p>Build <code>migrations</code> package, run the following from the monorepo root directory, notice that the command is a bit different from version 2</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ PKG<span style="color:#f92672">=</span>@0xproject/migrations yarn build</code></pre></div>
+
+<p>Deploy the contracts to Matic testnet</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd packages/migrations/
+$ yarn migrate</code></pre></div>
+
+<p>The script prints out our deployed contracts and updates the addresses in <code>packages/migrations/artifacts/1.0.0/</code> folder</p>
+
+<p><img src="/matic/19.png" alt="matic19" title="Deployed" /></p>
 
 <p>Thanks for reading and I do hope you found this article somewhat helpful.</p>
 
