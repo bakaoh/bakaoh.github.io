@@ -6,15 +6,26 @@
     <description>Recent content in Hunters on BAKAOH</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Sep 2019 14:45:36 +0700</lastBuildDate>
+    <lastBuildDate>Fri, 04 Oct 2019 09:51:36 +0700</lastBuildDate>
     
 	<atom:link href="https://bakaoh.com/hunter/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>An Introduction to Monkey D. App</title>
+      <link>https://bakaoh.com/hunter/3498-consensys-consensysgrants-challenges/</link>
+      <pubDate>Fri, 04 Oct 2019 09:51:36 +0700</pubDate>
+      
+      <guid>https://bakaoh.com/hunter/3498-consensys-consensysgrants-challenges/</guid>
+      <description>In the previous Gitcoin hackathon, i took part in a Matic challenge to Enable A Set Of Decentralized Protocols On The Matic Network. That&amp;rsquo;s a good chance to get a better look at these well-known protocols.
+These are the problems i encounter when working on the challenge:
+ Uniswap uses Vyper which i&amp;rsquo;m not familiar with. KyberSwap contracts uses many different Solc version. 0x has two major versions. bZx is dependent on 0x (both version) and Kyber addresses.</description>
+    </item>
+    
+    <item>
       <title>Deploying BZx on the Matic testnet</title>
       <link>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part5/</link>
-      <pubDate>Wed, 11 Sep 2019 14:45:36 +0700</pubDate>
+      <pubDate>Fri, 13 Sep 2019 11:45:36 +0700</pubDate>
       
       <guid>https://bakaoh.com/hunter/3398-maticnetwork-matic-bounties-part5/</guid>
       <description>Matic Network is a sidechain based scaling solution for public blockchains. It is based on an adapted implementation of Plasma framework. Matic provides scalability while ensuring a superior user experience in a secured and decentralized manner.

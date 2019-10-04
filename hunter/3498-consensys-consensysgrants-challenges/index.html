@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>An Introduction to Monkey D. App &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.com/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/trader/"> Trader </a></li><li><a href="/hunter/"> Hunter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>An Introduction to Monkey D. App</h1>
+  <time datetime=2019-10-04T09:51:36&#43;0700 class="post-date">Fri, Oct 4, 2019</time>
+  
+
+<p><img src="/monkey/logo.png" alt="logo" title="Logo" /></p>
+
+<p>In the <a href="https://gitcoin.co/hackathon/ethereal-blocks/">previous Gitcoin hackathon</a>, i took part in a Matic challenge to <a href="https://gitcoin.co/issue/maticnetwork/matic-bounties/1/3398">Enable A Set Of Decentralized Protocols On The Matic Network</a>. That&rsquo;s a good chance to get a better look at these well-known protocols.</p>
+
+<p>These are the problems i encounter when working on the challenge:</p>
+
+<ul>
+<li><code>Uniswap</code> uses Vyper which i&rsquo;m not familiar with.</li>
+<li><code>KyberSwap</code> contracts uses many different Solc version.</li>
+<li><code>0x</code> has two major versions.</li>
+<li><code>bZx</code> is dependent on <code>0x</code> (both version) and <code>Kyber</code> addresses.</li>
+<li>Some repositories don&rsquo;t have any migrate instructions.</li>
+<li>Many contracts are not compilable.</li>
+</ul>
+
+<p>It took me few days to figure out how to deploy these protocol, so i think it will be helpful for developers if there&rsquo;s an appstore where they can deploy any dapp in seconds.</p>
+
+<p><a href="http://bakaoh.com/monkeydapp/">Monkey D. App</a> was born from that idea.</p>
+
+<p><img src="/monkey/2.png" alt="UI" title="UI" /></p>
+
+<h2 id="what-is-monkey-d-app">What is Monkey D. App?</h2>
+
+<p><strong>Monkey D. App</strong> is a tool designed to make it easier to deploy decentralized applications. The tool allow a developer to package up an application with all of the parts it needs, such as <em>abi</em>, <em>bytecode</em> and other dependencies, and ship it all out as one file. By doing so, the developer can rest assured that the application will be deployable on Ethereum (Mainnet, Rinkeby, Ropsten, Kovan&hellip;), Ganache or a sidechain (like Matic, Poa&hellip;).</p>
+
+<p>For example, in <a href="https://gitcoin.co/issue/bZxNetwork/Bounties/3/3393">Fulcrum-Compound-MakerDAO InstaDapp Bridge</a> challenge, one may need to deploy Fulcrum, Compound, MakerDAO and InstaDapp on their <a href="https://www.trufflesuite.com/ganache">Ganache</a> for developing and testing. <strong>Monkey D. App</strong> will save them a lot of time setting environment up.</p>
+
+<p>The three main components of <strong>Monkey D. App</strong> are:</p>
+
+<ul>
+<li>Monkeyfile</li>
+<li>MonkeyEngine</li>
+<li>MonkeyHub</li>
+</ul>
+
+<h3 id="monkeyfile">Monkeyfile</h3>
+
+<p>A Monkeyfile is a text document that contains all the commands a user could call on web3 to deploy an decentralized application. Monkeyfile syntax is simple and easy to learn with just four type of instructions.</p>
+
+<p>This is the Monkeyfile to deploy a Erc-20 token</p>
+
+<p><img src="/monkey/1.png" alt="monkeyfile" title="ERC20" /></p>
+
+<p>For more details please refer to the <a href="https://github.com/monkeydapp/hub/blob/master/README.md">document</a>.</p>
+
+<h3 id="monkeyengine">MonkeyEngine</h3>
+
+<p>The MonkeyEngine runs the instructions in the Monkeyfile one-by-one, sending the transaction to rpc endpoint if necessary, before finally outputting the addresses of your new contracts.</p>
+
+<p>You can find POC implementation <a href="https://github.com/monkeydapp/web/blob/master/src/engine/MonkeyEngine.js">here</a>.</p>
+
+<h3 id="monkeyhub">MonkeyHub</h3>
+
+<p>MonkeyHub is a <a href="https://github.com/monkeydapp/hub">repository</a> to store Monkeyfiles.</p>
+
+<p><img src="/monkey/7.png" alt="monkeyhub" title="hub" /></p>
+
+<p>Anyone can upload new Monkeyfile by creating a pull request there. You may also deploy a private or local hub as needed.</p>
+
+<h2 id="monkey-d-app-in-action">Monkey D. App in Action</h2>
+
+<p>This session will show how to deploy Uniswap on Matic testnet.</p>
+
+<ul>
+<li><p>Go to <a href="http://bakaoh.com/monkeydapp/">Monkey D. App</a></p></li>
+
+<li><p>Set RPC Server to <code>https://testnet2.matic.network</code></p></li>
+</ul>
+
+<p><img src="/monkey/3.png" alt="step1" title="Deploy" /></p>
+
+<ul>
+<li>Click on Uniswap view button to open detail modal</li>
+</ul>
+
+<p><img src="/monkey/4.png" alt="step2" title="Deploy" /></p>
+
+<ul>
+<li>Uniswap doesn&rsquo;t required any params, just click <code>Deploy</code> button</li>
+</ul>
+
+<p><img src="/monkey/5.png" alt="step3" title="Deploy" /></p>
+
+<ul>
+<li>Your deployed Uniswap contracts on Matic will show on <code>Instances</code> tab</li>
+</ul>
+
+<p><img src="/monkey/6.png" alt="step4" title="Deploy" /></p>
+
+<p>That&rsquo;s all. I hope you see these steps is easier than in my previous <a href="https://medium.com/@batatsar/deploy-uniswap-on-the-matic-testnet-810a2a2ccfb3">guide</a>. Feel free to try deploying other DApp on other Network!</p>
+
+<h2 id="beyond-the-hackathon">Beyond the hackathon</h2>
+
+<p>Since this hackathon happen during my vacation, the submission is far from perfect. There&rsquo;re something i think should be improved:</p>
+
+<ul>
+<li>Standardize <code>Monkeyfile</code> syntax and document it</li>
+<li>Enhance the MonkeyEngine: validate script, auto-deploy dependency, prevent injection</li>
+<li>Support other Smart Contract than EVM-based</li>
+<li>Implement <code>MonkeyRegister</code> contract if keep tract of deployed DApp</li>
+<li>Build <code>monkeycli</code> to run Monkey D. App from terminal</li>
+<li>Make a plugin to generate Monkeyfile from Truffle migration scripts</li>
+<li>Support more DApp in the store</li>
+</ul>
+
+<h2 id="disclaimer">Disclaimer</h2>
+
+<p><strong>Monkey D. App</strong> is not related to <a href="https://onepiece.fandom.com/wiki/Monkey_D._Luffy">Straw Hat Luffy</a>, <a href="https://onepiece.fandom.com/wiki/Monkey_D._Dragon">Dragon the Revolutionary</a> or <a href="https://onepiece.fandom.com/wiki/Monkey_D._Garp">Vice Admiral Garp</a></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
