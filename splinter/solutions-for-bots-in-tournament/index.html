@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Solutions for low level bots in tournament &middot; BAKAOH</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bakaoh.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" layout-reverse">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bakaoh.com/"><h1>BAKAOH</h1></a>
+      <p class="lead">
+       the king of baka-sub.net 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="/hunter/"> Hunter </a></li><li><a href="/splinter/"> Splinter </a></li><li><a href="/trader/"> Trader </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Solutions for low level bots in tournament</h1>
+  <time datetime=2020-03-08T09:39:36&#43;0700 class="post-date">Sun, Mar 8, 2020</time>
+  
+
+<p>Players don&rsquo;t like bots because they register as many accounts as possible in the off chance that they might end up getting a prize in high level tournament just by pure luck.</p>
+
+<p>Splinterlands team tried to fix that problem by adding an entry fee in <a href="https://www.splintertalk.io/splinterlands/@splinterlands/upcoming-changes-and-downtime">an update 2 months ago</a>. But it seems ineffective. In fact, the solution even has a negative impact. Less real players willing to pay that fee giving the bots more chance to get prizes.</p>
+
+<p>Some players suggest limiting access to high level tournaments using collections value or max level deck. I think that&rsquo;s not reasonable since some skillful players may want to test their skill with the <strong>level-1-challenge</strong> (like they did in <a href="https://tvtropes.org/pmwiki/pmwiki.php/Main/LowLevelRun">Traditional RPG</a> or <a href="https://www.youtube.com/watch?v=UXQDGDpXmEU">Clash Royale</a>)</p>
+
+<p>I have 2 ideas maybe helpful in this situation.</p>
+
+<h3 id="solution-1-ticket-system">Solution 1: Ticket system</h3>
+
+<p>For example, with an tournament like this one</p>
+
+<p><img src="/splinter/t1.png" alt="example tournament" title="Example Tournament" /></p>
+
+<p>Instead of asking players to own a full set (or a splinter set) of <strong>Gold Level, Gold Untamed Cards</strong>, the tournament may require a <strong>Gold Level, Gold Untamed Ticket</strong> to enter.</p>
+
+<p>So how to get these <em>Tickets</em>? It&rsquo;s simple. While playing ranked match at <strong>Gold League</strong> with <strong>Gold Untamed</strong> team (the cards don&rsquo;t need to be at <strong>Gold Level</strong>), players will have a chance to get <strong>Gold Level, Gold Untamed Ticket</strong> dropped if they win. If the drop probability is 10%, it means players have to win around 10 match with <strong>Gold Untamed</strong> team to prove they strong enough to join <strong>Gold Level, Gold Untamed</strong> tournament. We may increase that probability if they are in win streak.</p>
+
+<p>The same apply for <strong>Silver Level, Normal Alpha Ticket</strong> and <strong>Diamond Level, Gold Beta Ticket</strong>&hellip; These tickets should not be transferable because they are kind of certifications.</p>
+
+<p>Of couse we could keep the DEC fee, but make that high enough to prevent low level bot.</p>
+
+<p><img src="/splinter/t2.png" alt="ticket" title="Ticket" /></p>
+
+<p>Pros:</p>
+
+<ul>
+<li>We alway love to see something dropped after each matches</li>
+<li>Encourage people to try different card set to collect tickets, so the picked teams will be more diverse</li>
+</ul>
+
+<p>Cons:</p>
+
+<ul>
+<li>Players who want to play tournaments only will be forced to play ranked matches, or pay a high fee to join</li>
+<li>Build up an entire feature just to prevent bot is not always a good choice</li>
+</ul>
+
+<p>Bonus:</p>
+
+<ul>
+<li>Maybe consider dropping a <strong>Legendary Ticket</strong> at 0.1% which could be use to join the tournament with a fullset max level cards, so free players may get a chance to play high level tournament one in a while.</li>
+</ul>
+
+<p>So aside from waiting for Splinterlands team to implement that system, what else we can do? Good news is i got another solution that can be used now.</p>
+
+<h3 id="solution-2-using-the-botting-service">Solution 2: Using the botting service</h3>
+
+<p>No, i&rsquo;m not kidding you. It&rsquo;s counterintuitive but let me explain.</p>
+
+<p>The reason why the low level bot (botting accounts with $0 or very cheap collections) got a chance in high level tournament is because there&rsquo;re too few real players take part in the event (maybe the time is not convenient to a lot of players). If there&rsquo;re only 10 real players, 100 low level bots will have so much chance to win low prize.</p>
+
+<p>But what if we got 100 real accounts, with strong deck, joining the event? 100 low level bots above is just wasting their (10 x 100) DEC fee, with zero-probability to get a single prize. Of cause they may create more accounts to increase their chance, but for each real account, they will need to have ten times more bots. When the P/L is negative, the bots will stop. Problem solved.</p>
+
+<p>The difficult is, how can we have hundreds of <strong>strong</strong> and <strong>active</strong> accounts? I see a lot accounts with enough cards to make 2 or 3 strong full decks, but they can&rsquo;t spend all day to join event. The tournament is last too long currently. For an 8-round tournament, to go to final round, we have to do like 20 matches, it takes about 2 hours.</p>
+
+<p>So using bot service maybe helpful. Strong accounts may join tournaments when the time is not convenient, that will help the community to fight back low level bot. Also you may let the bot play few first rounds to save a lot of time, then comeback to play by yourself if it reach later rounds (if no, you save even more time). If everyone using bot, the bot will act as a qualifier, higher values/better built collections will have more chance to pass through.</p>
+
+<p><img src="/splinter/t3.png" alt="bot" title="Bot" /></p>
+
+<p>Pros:</p>
+
+<ul>
+<li>Save time and make the tournament more enjoyable</li>
+<li>Better use of your cards than keep them in dust</li>
+<li>The service is cheap</li>
+</ul>
+
+<p>Cons:</p>
+
+<ul>
+<li>A lot of people still hate bot</li>
+</ul>
+
+<hr />
+
+<h2 id="summary">Summary</h2>
+
+<p>We going to launch our botting service soon, join us <a href="https://discord.gg/4J6d9s">here</a> if you&rsquo;re interested in ^_^</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
